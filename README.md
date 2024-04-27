@@ -12,7 +12,7 @@ I'm passionate about bioinformatics. I am a current student within the Bioinform
 
 - **Description:** Brief description of the project.
 - **Technologies Used:** List of technologies or tools used.
-- **Demo:** [Link to a live demo or a video demonstration.](https://mjm33.shinyapps.io/BIFX551_Final_Project/)
+- **Demo:** [Link to a live demo or a video demonstration.](https://abeolsson.shinyapps.io/USCISHistoricalProcessingTimes/)
 - **GitHub Repository:** Link to the project's repository.
 
 ### [Project Name 2]
