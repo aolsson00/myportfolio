@@ -1,6 +1,6 @@
 # Project Folder
 
-This folder contains various components of a project, including R Shiny apps, web-enabled database systems, and R packages.
+This folder contains various components of web-enabled database system projects.
 
 ## Web-enabled Database Systems
 
