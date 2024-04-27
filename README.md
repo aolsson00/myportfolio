@@ -1,6 +1,6 @@
 # Abraham Olsson's Portfolio
 
-Welcome to myportfolio! Here you'll find a collection of my projects, showcasing my skills and experience in bioinformatics / database development.
+Welcome to my portfolio! Here you'll find a collection of my projects, showcasing my skills and experience in bioinformatics / database development.
 
 ## About Me
 
