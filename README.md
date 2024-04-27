@@ -8,18 +8,18 @@ I'm passionate about bioinformatics. I am a current student within the Bioinform
 
 ## Projects
 
+### Airline Reservation Web-enabled System
+
+- **Description:** A web-enabled database system that allows users to make airline reservations.
+- **Technologies Used:** MariaDB, mySQL, Pluto.
+- **Demo:** COMING SOON
+- **GitHub Repository:** Link to the project's repository.
+
 ### 
 
 - **Description:** Brief description of the project.
 - **Technologies Used:** List of technologies or tools used.
-- **Demo:** [Link to a live demo or a video demonstration.](https://abeolsson.shinyapps.io/USCISHistoricalProcessingTimes/)
-- **GitHub Repository:** Link to the project's repository.
-
-### [Project Name 2]
-
-- **Description:** Brief description of the project.
-- **Technologies Used:** List of technologies or tools used.
-- **Demo:** Link to a live demo or a video demonstration.
+- **Demo:** [Link to a R shiny app.](https://abeolsson.shinyapps.io/USCISHistoricalProcessingTimes/)
 - **GitHub Repository:** Link to the project's repository.
 
 ### [Project Name 3]
