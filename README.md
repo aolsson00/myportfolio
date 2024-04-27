@@ -18,16 +18,10 @@ I'm passionate about bioinformatics. I am a current student within the Bioinform
 ### 
 
 - **Description:** Brief description of the project.
-- **Technologies Used:** List of technologies or tools used.
+- **Technologies Used:** R Studio, [ShinyApps.io](http://shinyapps.io) .
 - **Demo:** [Link to a R shiny app.](https://abeolsson.shinyapps.io/USCISHistoricalProcessingTimes/)
 - **GitHub Repository:** Link to the project's repository.
 
-### [Project Name 3]
-
-- **Description:** Brief description of the project.
-- **Technologies Used:** List of technologies or tools used.
-- **Demo:** Link to a live demo or a video demonstration.
-- **GitHub Repository:** Link to the project's repository.
 
 ## Skills
 
