@@ -15,7 +15,7 @@ I'm passionate about bioinformatics. I am a current student within the Bioinform
 - **Demo:** COMING SOON
 - **GitHub Repository:** Link to the project's repository.
 
-### 
+### USCIS Historical Processing Times Web-app
 
 - **Description:** Brief description of the project.
 - **Technologies Used:** R Studio, [ShinyApps.io](http://shinyapps.io) .
@@ -25,22 +25,20 @@ I'm passionate about bioinformatics. I am a current student within the Bioinform
 
 ## Skills
 
-- List your key skills here, such as programming languages, frameworks, tools, etc.
+-  **R:** Language, R Studio, shinyapps.io, R package creation
+-  **Python:** Language
+-  **SQL:** mySQL, MariaDB, Pluto, Entity Relation Diagrams, Relational Schema, Database Creation, Web-enabled database systems using PHP, HTML
+  
 
 ## Education
 
-- **[Degree]** in [Field], [University/Institution], [Year]
-- **[Degree]** in [Field], [University/Institution], [Year]
+- **B.A** in Biology, Hood College, 2022
+- **M.S** in Bioinformatics, Hood College, 2026
 
 ## Contact Me
 
-- Email: [Your Email Address]
-- LinkedIn: [Your LinkedIn Profile]
-- Website: [Your Personal Website]
-
+- Email: abe.olsson@gmail.com
+- LinkedIn: [LinkedIn Profile](https://www.linkedin.com/in/abraham-olsson-080191103/)
+  
 Feel free to reach out to discuss collaboration opportunities or just to say hello!
-
-## License
-
-This project is licensed under the [License Name] - see the [LICENSE](LICENSE) file for details.
 
