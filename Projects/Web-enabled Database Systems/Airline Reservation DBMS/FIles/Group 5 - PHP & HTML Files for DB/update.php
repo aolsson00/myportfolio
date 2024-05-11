@@ -2,7 +2,7 @@
 
 include_once 'db.php'; 
 
-# form data 
+
 $passenger_id = $_POST['passenger_id']; 
 $address = $_POST['address']; 
 
