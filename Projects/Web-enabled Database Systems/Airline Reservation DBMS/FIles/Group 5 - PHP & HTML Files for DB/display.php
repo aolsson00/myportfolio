@@ -6,13 +6,13 @@ $stmt = $conn->prepare($query_string);
 $stmt->execute(); 
 $stmt->setFetchMode(PDO::FETCH_NUM); 
 
-# Number of columns of the most recent query result. 
+
 $num_c = $stmt->columnCount();
-# var_dump($num_c); //this is for debugging only. 
+ 
 
 echo "<table border=1>\n"; 
 
-# display table headers 
+
 echo "<tr>"; 
 for ($i = 0; $i < $num_c; $i++) { 
 	$col = $stmt->getColumnMeta($i); 
