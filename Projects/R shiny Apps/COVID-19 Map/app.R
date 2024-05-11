@@ -1,4 +1,4 @@
-# Load Rpackages
+# Load R packages
 library(shiny)
 library(shinythemes)
 library(dplyr)
@@ -8,8 +8,11 @@ library(tidyr)
 library(shinydashboard)
 library(shinyWidgets)
 
+
 # Import and tidy data
-covid_data <- read.csv("/Users/olssons/Documents/BIFX551/Final Project/Provisional_COVID-19_Death_Counts_by_Week_Ending_Date_and_State_20240426.csv")
+#https://data.cdc.gov/NCHS/Provisional-COVID-19-Death-Counts-by-Week-Ending-D/r8kw-7aab/about_data
+
+covid_data <- read.csv("Provisional_COVID-19_Death_Counts_by_Week_Ending_Date_and_State_20240426.csv")
 
 deaths_by_year_state <- covid_data %>% 
   group_by(State, Year, Month) %>%
@@ -24,28 +27,42 @@ deaths_by_year_state <- na.omit(deaths_by_year_state)
 deaths_by_year_state <- deaths_by_year_state %>%
   pivot_longer(cols = c("SARS-CoV-2", "Pneumonia", "Influenza"), names_to = "Illness", values_to = "total_deaths")
 
-# deaths_by_year_state$Month <- sprintf("%02d", deaths_by_year_state$Month)
 
-# Create a new column by combining year and month
-deaths_by_year_state <- deaths_by_year_state %>%
-  mutate(Year_Month = paste(Year, Month, sep = "."))
+plot_map <- function(source_data) {
+  json <- jsonlite::read_json("https://raw.githubusercontent.com/shawnbot/topogram/master/data/us-states.geojson")
+  
+  ## remove alaska and hawaii
+  json$features <- Filter(function(x) !x$properties$name %in% c("Alaska", "Hawaii"), json$features)
+  
+  source_data %>% 
+    echarts4r::e_charts(x = State) %>% 
+    echarts4r::e_map_register("USA", json) %>% 
+    echarts4r::e_map(total_deaths, map = "USA") %>% 
+    echarts4r::e_visual_map(
+      inRange = list(color = c("#FED2D2", "#7a0000")),
+      min = min(source_data$total_deaths, na.rm = TRUE),
+      max = max(source_data$total_deaths, na.rm = TRUE)
+    )
+}
+
 
 # Define UI
 ui <- fluidPage(
+  #Setting the theme
   theme = shinytheme("cosmo"),
+  #Setting the title
   titlePanel("SARS-CoV-2 -- Final Project for BIFX551"),
+
+  # Sidebar with a selection input for variable by days
   sidebarLayout(
     sidebarPanel(
-      sliderTextInput("year_month_slider",
-                      label="Select Date:",
-                      choices = unique(deaths_by_year_state$Year_Month),
-                      selected = unique(deaths_by_year_state$Year_Month)[1],
-                      animate = animationOptions(interval = 1200, loop = FALSE)),
+      selectInput('Year', 'Select Year', unique(deaths_by_year_state$Year)),
+      selectInput('Month', 'Select Month', unique(deaths_by_year_state$Month)),
       checkboxGroupInput(
         "Illness", "Filter by Illness",
         choices = c("SARS-CoV-2", "Pneumonia", "Influenza"), 
         selected = c("SARS-CoV-2", "Pneumonia", "Influenza")),
-    ),
+      ),
     mainPanel(
       echarts4rOutput("plot_map")
     )
@@ -54,24 +71,12 @@ ui <- fluidPage(
 
 # Define server
 server <- function(input, output, session) {
-  # Reactive expression to get the current value of the slider
-  current_year_month <- reactive({
-    selected_text <- input$year_month_slider
-    selected_index <- which(unique(deaths_by_year_state$Year_Month) == selected_text)
-    selected_year_month <- unique(deaths_by_year_state$Year_Month)[selected_index]
-    return(selected_year_month)
-  })
   
   
   output$plot_map <- renderEcharts4r({
     req(input$Illness)
-    
-    # Get the selected Year_Month value based on the index selected by the slider
-    selected_year_month <- current_year_month()
-    
-    # Filter the data based on the selected Year_Month and Illness
     filtered_data <- deaths_by_year_state %>%
-      filter(Year_Month == selected_year_month & Illness %in% input$Illness)
+      filter(Year == input$Year & Month == input$Month & Illness == input$Illness)
     
     plot_map(filtered_data)
   })
@@ -80,4 +85,5 @@ server <- function(input, output, session) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
 

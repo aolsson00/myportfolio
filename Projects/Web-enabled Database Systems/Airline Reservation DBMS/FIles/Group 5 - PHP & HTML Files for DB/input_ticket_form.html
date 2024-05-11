@@ -1,0 +1,50 @@
+</head>
+<body>
+    <header>
+        <h1>Welcome to Flight Booking</h1>
+    </header>
+    <nav>
+<a href="index.html">Home</a>
+<div style="width: 20px;"></div>
+<a href="create_user_form.html">Create New User</a>
+<div style="width: 20px;"></div>
+<a href="search_flights_form.html">Flights Search</a>
+<div style="width: 20px;"></div>
+<a href="input_ticket_form.html">Make Reservation</a>
+<div style="width: 20px;"></div>
+<a href="create_passenger_form.html">Create Passenger</a>
+<div style="width: 20px;"></div>
+<a href="input_address_form.html">Passenger Address</a>
+<div style="width: 20px;"></div>
+<a href="about_crew_form.php">About Crew</a>
+<div style="width: 20px;"></div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Reservation</title>
+</head>
+
+   </nav>
+    <section>
+        <h2>Reservation Form</h2>
+        <form action="input_ticket_form.php" method="POST">
+            Ticket ID: <input type="text" name="ticket_id"/><br><br>
+            Seat Number: <input type="text" name="seat_num"/><br><br>
+            Date: <input type="date" name="date"/><br><br>
+            User ID: <input type="text" name="user_id"/><br><br>
+            Flight Number: <input type="text" name="flight_num"/><br><br>
+            Transaction ID: <input type="text" name="transaction_id"/><br><br>
+            Amount: <input type="text" name="amount"/><br><br>
+            Payment Mode: <input type="text" name="payment_mode"/><br><br>
+            <input type="submit" value="Submit Reservation">
+        </form>
+    </section>
+    <footer>
+        <p>&copy; 2024 TravelX Booking. All rights reserved.</p>
+    </footer>
+</body>
+</html>

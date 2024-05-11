@@ -1,0 +1,12 @@
+name: COVID19Map
+title: COVID-19 Map
+username: abeolsson
+account: abeolsson
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11915591
+bundleId: 8566100
+url: https://abeolsson.shinyapps.io/COVID19Map/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,60 @@
+</head>
+<body>
+    <header>
+        <h1>Welcome to Flight Booking</h1>
+    </header>
+    <nav>
+<a href="index.html">Home</a>
+<div style="width: 20px;"></div>
+<a href="create_user_form.html">Create New User</a>
+<div style="width: 20px;"></div>
+<a href="search_flights_form.html">Flights Search</a>
+<div style="width: 20px;"></div>
+<a href="input_ticket_form.html">Make Reservation</a>
+<div style="width: 20px;"></div>
+<a href="create_passenger_form.html">Create Passenger</a>
+<div style="width: 20px;"></div>
+<a href="input_address_form.html">Passenger Address</a>
+<div style="width: 20px;"></div>
+<a href="about_crew_form.php">About Crew</a>
+<div style="width: 20px;"></div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Booking Form</title>
+</head>
+<body>
+    <h2>Flight Booking Form</h2>
+    <form action="search_flights.php" method="POST">
+        <label for="depart_city">Departing From City:</label>
+        <select id="depart_city" name="depart_city" required>
+            <option value="default" selected>Select Departing City</option>
+            <option value="london">london</option>
+            <option value="new york">new york</option>
+            <option value="paris">paris</option>
+            <option value="tokyo">tokyo</option>
+            <option value="beijing">beijing</option>
+        </select>
+        <br><br>
+        <label for="arrival_city">Arriving City:</label>
+        <select id="arrival_city" name="arrival_city" required>
+            <option value="default" selected>Select Arriving City</option>
+            <option value="london">london</option>
+            <option value="new york">new york</option>
+            <option value="paris">paris</option>
+            <option value="tokyo">tokyo</option>
+            <option value="beijing">beijing</option>
+        </select>
+        <br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+<footer>
+        <p>&copy; 2024 TravelX Booking. All rights reserved.</p>
+    </footer>
