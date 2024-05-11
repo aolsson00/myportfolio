@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Reservation</title>
+</head>
+<body>
+    <header>
+        <h1>Make a Reservation</h1>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="input_passenger_form.html">Create New Passenger</a>
+    </nav>
+    <section>
+        <h2>Reservation Form</h2>
+        <form action="input_ticket_form.php" method="POST">
+            Ticket ID: <input type="text" name="ticket_id"/><br><br>
+            Seat Number: <input type="text" name="seat_num"/><br><br>
+            Date: <input type="date" name="date"/><br><br>
+            User ID: <input type="text" name="user_id"/><br><br>
+            Flight Number: <input type="text" name="flight_num"/><br><br>
+            Transaction ID: <input type="text" name="transaction_id"/><br><br>
+            Amount: <input type="text" name="amount"/><br><br>
+            Payment Mode: <input type="text" name="payment_mode"/><br><br>
+            <input type="submit" value="Submit Reservation">
+        </form>
+    </section>
+    <footer>
+        <p>&copy; 2024 TravelX Booking. All rights reserved.</p>
+    </footer>
+</body>
+</html>
