@@ -1,80 +1,86 @@
-# ABRAHAM JOSEPH OLSSON
-2905 Kling Court, Frederick, MD 21703  
-(301) 401-7740 • abe.olsson@gmail.com
+# Abraham Joseph Olsson  
+**Address:** 1306 Baker Pl E Apt 14, Frederick, MD 21702  
+**Phone:** (301) 401-7740  
+**Email:** abe.olsson@gmail.com  
 
-## OBJECTIVE
-To obtain an entry-level position as a Lab Research Assistant or Database Developer where I can utilize my background in research and educational background in biology and bioinformatics.
+---
 
-## SKILLS
-- Data Organization and Analysis
-- DNA/RNA Extraction
-- DNA/RNA Isolation & Purification
-- Aseptic Technique
-- Experimental Design
-- Microbial Cell Culturing
-- Teamwork / Collaboration
-- Microscopy
-- PCR/qRT-PCR
-- cDNA synthesis
-- Customer Service
-- Spanish
+## Objective  
+Seeking an entry-level position in **Health Informatics and Bioinformatics** that leverages my background in **data analysis, programming, and healthcare research**. Passionate about integrating computational methods to improve public health outcomes and streamline data-driven decision-making in clinical and research settings.  
 
-**Digital Literacy:** R, Python, SQL, Microsoft Office, Adobe Suite  
-**Equipment:** Nikon Elements, APS ASSESS, Qbit, NanoDrop, Media machine
+---
 
-## EDUCATION
-**Hood College, Frederick, MD**  
-- Master of Science: Bioinformatics  
-  - Est. Graduation: January 2026  
-  - Relevant Coursework: Introduction to Computer Science, Leading Reproducible Research, Advanced Programming for Bioinformatics, Applied Database Systems
+## Skills  
+- **Data Analysis & Visualization:** Python, R, SQL, Excel  
+- **Database Management & Querying:** SQL, Applied Database Systems  
+- **Bioinformatics & Health Informatics:** Data Pipelines, Genomic Data Processing  
+- **Machine Learning for Health Data**  
+- **Research & Experimental Design**  
+- **Aseptic Technique & Laboratory Research**  
+- **Community Health & Public Health Outreach**  
+- **Grant Writing & Program Coordination**  
+- **Bilingual Communication & Interpretation (English <-> Spanish)**  
 
-**Hood College, Frederick, MD**  
-- Bachelor of Arts: Biology with Honors Program  
-  - Graduation: May 2022  
-  - GPA: 3.41  
-  - Related Coursework: Organic Chemistry I & II; General Chemistry I & II; Cell Biology; Genetics; Microbiology; Scientific Principles and Methods of Molecular Genetics; Vertebrate Zoology; Evolution and Ecology  
-  - Languages: English (Native), Spanish (Fluent)
+---
 
-## CERTIFICATIONS
-Tier II (Public Trust) – FBI Background Clearance (favorable adjudication - 08/29/2022) DOJ Security Risk Assessment Clearance (favorable adjudication - 10/14/2022)
+## Certifications  
+- **Notary Public – State of Maryland**  
+- **Community Health Worker – State of Maryland**  
 
-## FELLOWSHIP EXPERIENCE
-**ORISE Research Affiliate for the Oomycete Department at FDWSRU**  
-July 2022 – Sept. 2023  
-U.S. Department of Agriculture - ARS-FDWSRU, Fort Detrick, MD - ORISE Participant  
-- Daily work in BSL-2, BSL-3P, and select agent lab space
-- Design, implement, and perform laboratory research projects
-- Collect and organize biological data (create datasets)
-- Maintain library of pathogen isolates
-- Maintenance of laboratory equipment
-- Procurement of lab equipment and supplies to meet project demands
-- Development of Job Hazard Analysis (JHAs) and organization of lab Safety Data Sheets (SDSs)
-- Analysis of experimental data and formal presentation of finding to international / national scientific community
-- Collection and maintenance of experimental data, journal entries, notes (physically and digitally)
+---
 
-**Poster Presentation(s):**
-OLSSON, A., Smallwood, E., and Shishkoff, N. (2023, March 22-23). “Effect of relative humidity on disease severity and sporulation of fungal pathogens Calonectria pseudonaviculata and C. henricotiae” [Poster presentation]. American Phytological Society, Potomac Division, Fairfax, VA.
+## Education  
 
-**Virology/Bacteria Department, FDWSRU, Ft. Detrick, MD**  
-June 2019 – February 2021  
-U.S. Department of Agriculture (ARS-FDWSRU), Fort Detrick, MD  
-Student Worker/Intern  
-- Conducted staff safety training on “Eye Wash and Safety Shower Training” (research subject matter and create training presentation)
-- Assisted maintain BSL-2, BSL-3P, and Insect Containment labs and greenhouses
-- Propagated perennial tree crops (ie. prunus and citrus)
-- Maintained optimal growing conditions for plants to support ongoing demand from research projects
-- Infected plants with pathogens (virus, bacteria) using insects, grafting, or mechanical methods
-- Propagated insects to use as vectors (Aphidoidea, and Diaphorina citri Kuwayama)
-- Collected plant tissue and/or soil samples and process samples (liquid nitrogen grinding, weighing and aliquoting of samples, RNA and DNA extraction)
-- Maintained inventory of laboratory chemicals and their corresponding SDS
+### Hood College, Frederick, MD  
+**Master of Science: Health Informatics (HIFX)**  
+- **Est. Graduation:** January 2026  
+- **Relevant Coursework:** Introduction to Computer Science, Leading Reproducible Research, Advanced Programming for Bioinformatics, Applied Database Systems  
 
-## ADDITIONAL WORK EXPERIENCE
-**Frederick County Public School System, Frederick, MD**  
-September 2022 – Present  
-Resident Substitute Teacher at Ballenger Creek Middle School  
-- Cover classes when needed
-- Create academic relationships with students to help engage them in learning
-- Support administration needs within the office
-- Help facilitate communication between Spanish-speaking families and staff
-- Help students gain access to resources when in need
-- Provide behavioral support in the classroom while teaching
+### Hood College, Frederick, MD  
+**Bachelor of Arts: Biology with Honors Program**  
+- **Graduation:** May 2022  
+- **GPA:** 3.41  
+- **Related Coursework:** Organic Chemistry I & II, General Chemistry I & II, Cell Biology, Genetics, Microbiology, Scientific Principles and Methods of Molecular Genetics, Vertebrate Zoology, Evolution and Ecology  
+- **Languages:** English (Native), Spanish (Fluent)  
+
+---
+
+## Work Experience  
+
+### Asian American Center of Frederick (AACF), Frederick, MD  
+**Project Coordinator & Grant Writer** (May 2024 – Present)  
+- Lead coordination for the **COVID-19 Health Literacy Grant**, overseeing outreach, education, and community engagement  
+- Develop and submit grant proposals to secure funding for public health initiatives and community programs  
+- Manage project deliverables, reporting, and compliance with grant requirements  
+- Assist clients with immigration applications, public benefits applications, and healthcare navigation  
+- Conduct outreach and education related to public health and community services  
+- Provide interpretation and translation services for Spanish-speaking clients  
+- Support ESL and civics education programs for individuals preparing for citizenship  
+
+### Frederick County Public School System, Frederick, MD  
+**Resident Substitute Teacher at Ballenger Creek Middle School** (September 2022 – Present)  
+- Cover classes and provide academic support to students  
+- Facilitate communication between Spanish-speaking families and school staff  
+- Assist students in accessing resources and provide behavioral support  
+
+---
+
+## Fellowship & Research Experience  
+
+### ORISE Research Affiliate – USDA ARS-FDWSRU, Fort Detrick, MD  
+**July 2022 – Sept. 2023**  
+- Conducted research on **pathogen-host interactions** in BSL-2 and BSL-3P lab environments  
+- Designed and implemented experiments studying fungal and bacterial pathogens  
+- Managed large datasets, analyzed results, and presented findings to scientific communities  
+- Maintained laboratory equipment and organized safety compliance materials  
+
+### Virology/Bacteria Department Intern – USDA ARS-FDWSRU, Fort Detrick, MD  
+**June 2019 – February 2021**  
+- Assisted in maintaining BSL-2 and BSL-3P labs  
+- Propagated plants and insects for disease vector studies  
+- Conducted DNA/RNA extractions and molecular analyses  
+
+---
+
+## Poster Presentation(s)  
+- **Olsson, A., Smallwood, E., & Shishkoff, N.** (2023, March 22-23). *Effect of relative humidity on disease severity and sporulation of fungal pathogens* [Poster presentation]. **American Phytopathological Society, Potomac Division, Fairfax, VA.**  
