@@ -1,4 +1,4 @@
-# Abraham Olsson's Portfolio
+# A Olsson's Portfolio
 
 Welcome to my portfolio! Here you'll find a collection of my projects, showcasing my skills and experience in bioinformatics / database development.
 
@@ -37,7 +37,7 @@ I'm passionate about bioinformatics. I am a current student within the Bioinform
 
 ## Contact Me
 
-- Email: abe.olsson@gmail.com
+- Email: a**********@gmail.com
 - LinkedIn: [LinkedIn Profile](https://www.linkedin.com/in/abraham-olsson-080191103/)
   
 Feel free to reach out to discuss collaboration opportunities or just to say hello!
