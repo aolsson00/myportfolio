@@ -1,7 +1,7 @@
-# A  Olsson  
-**Address:**   
-**Phone:** (301) 4**-****
-**Email:** ****************
+# Abraham Joseph Olsson  
+**Address:** 1306 Baker Pl E Apt 14, Frederick, MD 21702  
+**Phone:** (301) 401-7740  
+**Email:** abe.olsson@gmail.com  
 
 ---
 
