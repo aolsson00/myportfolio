@@ -1,44 +1,84 @@
-# Abraham Olsson's Portfolio
+# 👋 Hi, I'm Abraham Joseph Olsson
 
-Welcome to my portfolio! Here you'll find a collection of my projects, showcasing my skills and experience in bioinformatics / database development.
+📍 Frederick, MD | 📧 abe.olsson@gmail.com | 📞 (301) 401-7740  
+🎓 MS Health Informatics (in progress) | 🧬 BA in Biology | 💬 Bilingual: English & Spanish  
 
-## About Me
+---
 
-I'm passionate about bioinformatics. I am a current student within the Bioinformatics Program at Hood College in Frederick, MD. Thus far, my favorite classes have been Advanced Programming in R and Applied Database Systems. 
+## 🎯 Objective
 
-## Projects
+Motivated and mission-driven public health professional with a BA in Biology and current MS in Health Informatics candidate, seeking opportunities to contribute to data-informed, community-centered health programs. Experienced in community outreach, health education, and service coordination through work with nonprofits and public agencies. Passionate about supporting maternal and child health, advancing health equity, and using technology to streamline services.
 
-### Airline Reservation Web-enabled System
+---
 
-- **Description:** A web-enabled database system that allows users to make airline reservations.
-- **Technologies Used:** MariaDB, mySQL, Pluto.
-- **Demo:** COMING SOON
-- **GitHub Repository:** Link to the project's repository.
+## 🛠️ Skills
 
-### USCIS Historical Processing Times Web-app
+- **Community Engagement & Stakeholder Partnerships**  
+- **Project Coordination & Event Planning**  
+- **Client Advocacy & Service Navigation**  
+- **Data Management & Program Evaluation**  
+- **Health Equity & Cultural Responsiveness**  
+- **Digital Tools:** Microsoft Office, Google Workspace, Salesforce, Canva  
+- **Programming & Analysis:** R, Python, SQL  
+- **Languages:** English (Fluent), Spanish (Fluent)  
 
-- **Description:** Brief description of the project.
-- **Technologies Used:** R Studio, [ShinyApps.io](http://shinyapps.io) .
-- **Demo:** [Link to a R shiny app.](https://abeolsson.shinyapps.io/USCISHistoricalProcessingTimes/)
-- **GitHub Repository:** [Project Repository](https://github.com/aolsson00/myportfolio/tree/main/Projects/R%20shiny%20Apps)
+---
 
+## 🎓 Education
 
-## Skills
+**Hood College – Frederick, MD**  
+**Master of Science in Health Informatics** *(Expected January 2026)*  
+Relevant Coursework: Intro to CS, Reproducible Research, Bioinformatics Programming, Applied Database Systems  
 
--  **R:** Language, R Studio, shinyapps.io, R package creation
--  **Python:** Language
--  **SQL:** mySQL, MariaDB, Pluto, Entity Relation Diagrams, Relational Schema, Database Creation, Web-enabled database systems using PHP, HTML
-  
+**Bachelor of Arts in Biology with Honors Program** *(May 2022)*  
+GPA: 3.41  
+Courses: Genetics, Microbiology, Molecular Genetics, Ecology, Chemistry, Cell Biology  
 
-## Education
+---
 
-- **B.A** in Biology, Hood College, 2022
-- **M.S** in Bioinformatics, Hood College, 2026
+## 📜 Certifications
 
-## Contact Me
+- **Community Health Worker**, Maryland *(Feb 2025)*  
+- **Notary Public**, Maryland *(Feb 2025)*  
+- **Community Medical Interpreter Training** *(Completed March 2025)*  
 
-- Email: abe.olsson@gmail.com
-- LinkedIn: [LinkedIn Profile](https://www.linkedin.com/in/abraham-olsson-080191103/)
-  
-Feel free to reach out to discuss collaboration opportunities or just to say hello!
+---
 
+## 💼 Professional Experience
+
+### 🏥 Asian American Center of Frederick (AACF)  
+**Project Coordinator / Data Analyst Associate / CHW** *(May 2024 – Present)*  
+- Aligned community services for immigrant families and underserved populations.  
+- Led outreach efforts and health education campaigns across Frederick County.  
+- Drafted grant proposals and supported program implementation in coordination with local/federal agencies.  
+- Developed SOPs for systematic data collection and reporting.  
+- Communicated with political leaders and stakeholders to advocate program support.
+
+### 🏫 Frederick County Public School System  
+**Resident Substitute Teacher** *(Sept 2023 – June 2024)*  
+- Supported academic learning and behavior management in middle school classrooms.  
+- Facilitated communication between Spanish-speaking families and school staff.  
+- Connected students to resources and built strong rapport with diverse learners.
+
+### 🧪 USDA – ARS-FDWSRU, Fort Detrick, MD  
+**ORISE Research Affiliate – Oomycete Department** *(July 2022 – Sept 2023)*  
+- Conducted biological research in BSL-2 and BSL-3P environments.  
+- Created safety documentation (SDS, JHA), prepared reagents, and maintained lab equipment.  
+- Presented research at professional conferences and supported ongoing experiments.
+
+---
+
+## 🤝 Volunteer Experience
+
+### AmeriCorps Volunteer – AACF *(May – July 2024)*  
+- Supported client intake for immigration services and organized digital records.  
+- Completed CLINIC COIL training on immigration law.  
+- Participated in the Livable Frederick 2024–2026 Green Sustainability Plan working group.
+
+### Frederick Food Security Network *(May – October 2020)*  
+- Maintained community gardens and helped deliver produce to local families in need.
+
+---
+
+Thanks for visiting my profile!  
+🌐 Let’s connect and collaborate on public health, informatics, or outreach projects.
