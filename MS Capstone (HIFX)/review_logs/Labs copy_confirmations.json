@@ -1,0 +1,14 @@
+{
+  "document": "Labs copy",
+  "confirmations": {
+    "1": true,
+    "2": true,
+    "16": true,
+    "21": true,
+    "22": true,
+    "24": true,
+    "27": true,
+    "28": true,
+    "29": true
+  }
+}
