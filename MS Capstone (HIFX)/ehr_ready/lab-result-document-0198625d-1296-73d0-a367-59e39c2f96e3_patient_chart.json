@@ -1,0 +1,38 @@
+{
+  "ehr_ready": {
+    "patient_name": "Jose Jonas Castro Olsson",
+    "given_name": "Jose Jonas",
+    "family_name": "Castro Olsson",
+    "date_of_birth": "04/10/2001",
+    "sex": "Male",
+    "mrn": "1263258",
+    "age": "24",
+    "address": "1306 BAKER PL E APT 14, FREDERICK, MD",
+    "phone": "301-401-5294",
+    "ordering_provider": "E HEFNER",
+    "referring_provider": "",
+    "lab_facility": "O1: BN - Labcorp Burlington, 1447 York Court, Burlington, NC 27215-3361 Dir: Sanjai Nagendra, MD",
+    "source_document": "lab-result-document-0198625d-1296-73d0-a367-59e39c2f96e3.pdf"
+  },
+  "fhir_patient": {
+    "resourceType": "Patient",
+    "name": [
+      {
+        "family": "Castro Olsson",
+        "given": [
+          "Jose",
+          "Jonas"
+        ],
+        "text": "Jose Jonas Castro Olsson"
+      }
+    ],
+    "birthDate": "04/10/2001",
+    "gender": "male",
+    "identifier": [
+      {
+        "system": "http://hospital.example/mrn",
+        "value": "1263258"
+      }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+# Core pipeline
+watchdog>=3.0
+pytesseract
+pdf2image
+opencv-python
+Pillow
+flask
+requests
+
+# Optional: better OCR on some handwriting / messy scans (large PyTorch-based install)
+# pip install easyocr
+# Then enable via upload checkbox or: export OCR_HANDWRITING_ASSIST=1
+# Tune EasyOCR (optional): EASYOCR_MIN_CONFIDENCE, EASYOCR_DECODER=greedy|beamsearch,
+# EASYOCR_MIN_IMAGE_WIDTH, EASYOCR_MAG_RATIO, EASYOCR_TEXT_THRESHOLD, etc. — see ocr_engine.py
+# Hard scans: OCR_PDF_DPI=400 (or 600) before re-running OCR

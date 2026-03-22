@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Capstone Review - Documents</title>
+    <title>Patient Chart Creation From Scanned Documents</title>
     <style>
       body {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -20,9 +20,21 @@
         padding: 1rem;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       }
+      .doc-list { margin-bottom: 1.5rem; }
+      .doc-list h2 { font-size: 1.1rem; margin-bottom: 0.5rem; }
       .doc-item {
         margin: 0.25rem 0;
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        flex-wrap: wrap;
       }
+      .file-date {
+        color: #555;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+      .hint { color: #666; font-size: 0.9rem; }
       a {
         color: #0066cc;
         text-decoration: none;
@@ -42,6 +54,10 @@
         background-color: #e6ffed;
         border: 1px solid #8fd19e;
       }
+      .flash-warning {
+        background-color: #fff8e6;
+        border: 1px solid #e6c35c;
+      }
       .flash-error {
         background-color: #ffecec;
         border: 1px solid #ff9b9b;
@@ -49,8 +65,10 @@
     </style>
   </head>
   <body>
-    <h1>Capstone Document Review</h1>
-    <p>Select a processed PDF to review extracted data.</p>
+    <h1>Patient Chart Creation From Scanned Documents</h1>
+    <p>
+      <a href="{{ url_for('upload') }}">Import PDF from browser</a>
+    </p>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -60,22 +78,44 @@
       {% endif %}
     {% endwith %}
 
-    <div class="doc-list">
-      {% if documents %}
+    <section class="doc-list">
+      <h2>Uploaded / Processed PDFs</h2>
+      <p class="hint" style="margin-top: 0;">Date shown is when the file was added or last updated in this folder (from your computer’s file metadata).</p>
+      {% if document_entries %}
         <ul>
-          {% for doc in documents %}
+          {% for row in document_entries %}
             <li class="doc-item">
-              <a href="{{ url_for('review', filename=doc) }}">{{ doc }}</a>
+              <a href="{{ url_for('review', filename=row.name) }}">{{ row.name }}</a>
+              <span class="file-date">{{ row.date }}</span>
             </li>
           {% endfor %}
         </ul>
       {% else %}
         <p class="empty">
-          No PDFs found in <code>processed_scans/</code>. Make sure your ingestion
-          pipeline has moved at least one PDF there.
+          No PDFs in <code>processed_scans/</code>. Upload a PDF to get started.
         </p>
       {% endif %}
-    </div>
+    </section>
+
+    <section class="doc-list">
+      <h2>EHR-ready files</h2>
+      <p class="hint" style="margin-top: 0;">Date is file creation time when available (otherwise last modified).</p>
+      {% if ehr_ready_entries %}
+        <ul>
+          {% for row in ehr_ready_entries %}
+            <li class="doc-item">
+              <a href="{{ url_for('ehr_chart', filename=row.name) }}">{{ row.name }}</a>
+              <span class="hint">(download)</span>
+              <span class="file-date">{{ row.date }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="empty">
+          No EHR-ready files in <code>ehr_ready/</code>. Confirm demographics after uploading to create one.
+        </p>
+      {% endif %}
+    </section>
   </body>
   </html>
 

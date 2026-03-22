@@ -84,6 +84,10 @@
         background-color: #e6ffed;
         border: 1px solid #8fd19e;
       }
+      .flash-warning {
+        background-color: #fff8e6;
+        border: 1px solid #e6c35c;
+      }
       .flash-error {
         background-color: #ffecec;
         border: 1px solid #ff9b9b;
@@ -105,6 +109,10 @@
         {% endif %}
       </div>
       <div>
+        {% if patient_chart_filename %}
+          <a href="{{ url_for('ehr_chart', filename=patient_chart_filename) }}">Download patient chart (EHR-ready)</a>
+          &nbsp;|&nbsp;
+        {% endif %}
         <a href="{{ url_for('index') }}">&larr; Back to documents</a>
       </div>
     </header>
@@ -137,7 +145,7 @@
               <div class="item">
                 <div><strong>Line {{ item.id }}</strong></div>
                 <div>{{ item.raw_text }}</div>
-                <small>Category: {{ item.category or "other" }}</small>
+                <small>Category: {{ item.category or "other" }}{% if item.entity_role %} · Role: {{ item.entity_role }}{% endif %}</small>
                 <label>
                   <input type="checkbox" name="confirm_{{ item.id }}">
                   I confirm this data point is correctly interpreted.

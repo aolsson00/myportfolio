@@ -20,6 +20,8 @@ import pathlib
 from dataclasses import dataclass, asdict
 from typing import List
 
+PROJECT_ROOT = pathlib.Path(".").resolve()
+
 
 @dataclass
 class ExtractedItem:
@@ -41,6 +43,8 @@ class ExtractedItem:
         logic becomes more sophisticated.
     fhir_resource_type : str
         Type of FHIR resource this line most closely maps to (e.g., "Observation").
+    entity_role : str
+        Optional hint from the LLM, e.g. patient vs ordering_provider vs lab_facility.
     """
 
     id: str
@@ -49,99 +53,46 @@ class ExtractedItem:
     code_system: str = ""
     code: str = ""
     fhir_resource_type: str = ""
+    entity_role: str = ""
+
+
+# Precomputed keyword sets for fast "in" checks in _guess_category.
+_KEYWORDS_DEMOGRAPHIC = frozenset({
+    "dob", "date of birth", "birth date", "mrn", "medical record",
+    "patient name", "name:", "sex:", "male", "female", "age:",
+})
+_KEYWORDS_LAB = frozenset({
+    "lab", "result", "hgb", "hemoglobin", "glucose", "a1c",
+    "na ", "k ", "creatinine",
+})
+_KEYWORDS_MED = frozenset({
+    "medication", "medications", "rx", "tablet", "capsule",
+    "mg ", "mcg", "po ", "bid", "tid", "qhs",
+})
+_KEYWORDS_PROBLEM = frozenset({
+    "problem list", "diagnosis", "diagnoses", "dx:", "assessment", "icd",
+})
+_KEYWORDS_ORDER = frozenset({
+    "order:", "ordered", "test requested", "lab order", "imaging order",
+})
 
 
 def _guess_category(line: str) -> str:
     """
     Very simple heuristic to label a line.
-
-    This is intentionally naive for now; you can replace it with more
-    advanced NLP or rule-based logic later.
+    Uses precomputed sets for O(1) keyword presence checks.
     """
     lower = line.lower()
-
-    # Demographics: patient name, DOB, MRN, sex, age
-    if any(
-        keyword in lower
-        for keyword in [
-            "dob",
-            "date of birth",
-            "birth date",
-            "mrn",
-            "medical record",
-            "patient name",
-            "name:",
-            "sex:",
-            "male",
-            "female",
-            "age:",
-        ]
-    ):
+    if any(k in lower for k in _KEYWORDS_DEMOGRAPHIC):
         return "demographic"
-
-    # Lab results
-    if any(
-        keyword in lower
-        for keyword in [
-            "lab",
-            "result",
-            "hgb",
-            "hemoglobin",
-            "glucose",
-            "a1c",
-            "na ",
-            "k ",
-            "creatinine",
-        ]
-    ):
+    if any(k in lower for k in _KEYWORDS_LAB):
         return "lab_result"
-
-    # Medications
-    if any(
-        keyword in lower
-        for keyword in [
-            "medication",
-            "medications",
-            "rx",
-            "tablet",
-            "capsule",
-            "mg ",
-            "mcg",
-            "po ",
-            "bid",
-            "tid",
-            "qhs",
-        ]
-    ):
+    if any(k in lower for k in _KEYWORDS_MED):
         return "medication"
-
-    # Problem list / diagnoses
-    if any(
-        keyword in lower
-        for keyword in [
-            "problem list",
-            "diagnosis",
-            "diagnoses",
-            "dx:",
-            "assessment",
-            "icd",
-        ]
-    ):
+    if any(k in lower for k in _KEYWORDS_PROBLEM):
         return "problem"
-
-    # Orders (labs or imaging ordered)
-    if any(
-        keyword in lower
-        for keyword in [
-            "order:",
-            "ordered",
-            "test requested",
-            "lab order",
-            "imaging order",
-        ]
-    ):
+    if any(k in lower for k in _KEYWORDS_ORDER):
         return "order"
-
     return "other"
 
 
@@ -154,13 +105,19 @@ def load_extracted_items(doc_stem: str) -> List[ExtractedItem]:
        load items from there.
     2. Otherwise, fall back to simple rule-based extraction over the OCR text.
     """
-    project_root = pathlib.Path(".").resolve()
-
-    # 1) Try LLM-derived JSON first
-    llm_json_path = project_root / "review_data" / f"{doc_stem}_llm.json"
+    # 1) Try LLM-derived JSON first (v2 object with demographics + items, or legacy list)
+    llm_json_path = PROJECT_ROOT / "review_data" / f"{doc_stem}_llm.json"
     if llm_json_path.exists():
         with llm_json_path.open("r", encoding="utf-8") as f:
-            raw_items = json.load(f)
+            payload = json.load(f)
+        if isinstance(payload, dict):
+            raw_items = payload.get("items", [])
+            if not isinstance(raw_items, list):
+                raw_items = []
+        elif isinstance(payload, list):
+            raw_items = payload
+        else:
+            raw_items = []
         items: List[ExtractedItem] = []
         for idx, entry in enumerate(raw_items, start=1):
             if not isinstance(entry, dict):
@@ -172,12 +129,13 @@ def load_extracted_items(doc_stem: str) -> List[ExtractedItem]:
                 code_system=str(entry.get("code_system", "")),
                 code=str(entry.get("code", "")),
                 fhir_resource_type=str(entry.get("fhir_resource_type", "")),
+                entity_role=str(entry.get("entity_role", "")),
             )
             items.append(item)
         return items
 
     # 2) Fallback: rule-based extraction from OCR text
-    ocr_text_path = project_root / "temp_extractions" / f"{doc_stem}.txt"
+    ocr_text_path = PROJECT_ROOT / "temp_extractions" / f"{doc_stem}.txt"
     if not ocr_text_path.exists():
         raise FileNotFoundError(f"OCR text file not found: {ocr_text_path}")
 
@@ -221,8 +179,7 @@ def save_confirmations(doc_stem: str, confirmations: dict) -> pathlib.Path:
     pathlib.Path
         Path to the JSON file that stores the confirmation data.
     """
-    project_root = pathlib.Path(".").resolve()
-    review_dir = project_root / "review_logs"
+    review_dir = PROJECT_ROOT / "review_logs"
     review_dir.mkdir(parents=True, exist_ok=True)
 
     output_path = review_dir / f"{doc_stem}_confirmations.json"

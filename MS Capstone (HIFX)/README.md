@@ -4,6 +4,25 @@ This folder contains the **Ingestion and OCR** components of the capstone projec
 
 The implementation is designed to be **modular**, **observable (logged)**, and **robust** to real-world scanner behaviour (e.g., partial writes and file locks).
 
+### One command to start the system
+
+From this folder, after creating `.venv` and `pip install -r requirements.txt`:
+
+```bash
+chmod +x start.sh          # first time only
+./start.sh
+```
+
+Opens the review app at **http://127.0.0.1:5001** (override with `PORT=5002 ./start.sh`).
+
+- **Web app + folder watcher** (monitors `incoming_scans/`): `./start.sh --with-ingestion`
+- **macOS:** double-click **`start.command`** (may need *Right-click → Open* the first time).
+- **Cursor / VS Code:** **Terminal → Run Task… → “Start capstone (review app)”** (or the variant with ingestion).
+
+Optional: copy **`.env.example`** to **`.env`** to set `PORT`, `OCR_HANDWRITING_ASSIST`, `OCR_PDF_DPI`, etc.
+
+**LLM (Ollama):** After each OCR, the app calls a **local LLM** and writes `review_data/<doc>_llm.json`. Install [Ollama](https://ollama.com) and `ollama pull llama3` (or your `LLM_MODEL`). **`start.sh` / `start.command`** tries to run **`ollama serve`** in the background if nothing is listening on port **11434** (logs to `ollama_serve.log`). If the Ollama app is already running, the script skips that step. Set **`SKIP_LLM=1`** to skip LLM calls, or **`SKIP_OLLAMA=1`** to avoid starting `ollama serve` from the script.
+
 ---
 
 ### `ingestion_handler.py`
@@ -75,7 +94,8 @@ The implementation is designed to be **modular**, **observable (logged)**, and *
 
 The primary public function is:
 
-- **`extract_text_from_pdf(file_path: str) -> (full_text: str, output_txt_path: str)`**
+- **`extract_text_from_pdf(file_path: str) -> (full_text: str, output_txt_path: str, llm_ok: bool | None)`**  
+  After writing OCR text, calls the local LLM helper (unless `SKIP_LLM=1`) to build `review_data/<stem>_llm.json`.
 
 It performs the following steps:
 

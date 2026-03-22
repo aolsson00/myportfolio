@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "raw_text": "Patien} (e",
+    "category": "demographic",
+    "code_system": "",
+    "code": "",
+    "fhir_resource_type": "Patient"
+  },
+  {
+    "id": "2",
+    "raw_text": "Abe",
+    "category": "demographic",
+    "code_system": "",
+    "code": "",
+    "fhir_resource_type": "Patient"
+  },
+  {
+    "id": "3",
+    "raw_text": "Patict",
+    "category": "demographic",
+    "code_system": "",
+    "code": "",
+    "fhir_resource_type": "Patient"
+  },
+  {
+    "id": "4",
+    "raw_text": "Sey : Male",
+    "category": "demographic",
+    "code_system": "",
+    "code": "",
+    "fhir_resource_type": "Patient"
+  }
+]

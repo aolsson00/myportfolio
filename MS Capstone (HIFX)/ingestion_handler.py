@@ -29,6 +29,7 @@ from watchdog.events import FileSystemEventHandler, FileCreatedEvent
 from watchdog.observers import Observer
 
 from ocr_engine import extract_text_from_pdf
+from patient_chart import build_patient_chart
 
 
 LOGGER = logging.getLogger(__name__)
@@ -242,13 +243,29 @@ class PdfIngestionEventHandler(FileSystemEventHandler):
         """
         try:
             LOGGER.info("Starting OCR for processed PDF: %s", pdf_path)
-            full_text, txt_path = extract_text_from_pdf(str(pdf_path))
+            full_text, txt_path, llm_ok = extract_text_from_pdf(str(pdf_path))
             LOGGER.info(
-                "OCR completed for %s; text length=%d; txt_path=%s",
+                "OCR completed for %s; text length=%d; txt_path=%s; llm_ok=%s",
                 pdf_path.name,
                 len(full_text),
                 txt_path,
+                llm_ok,
             )
+            if llm_ok is False:
+                LOGGER.warning(
+                    "LLM extraction failed for %s — ensure Ollama is running or set SKIP_LLM=1",
+                    pdf_path.name,
+                )
+            # Build EHR-ready patient chart (pass OCR text to avoid re-reading)
+            try:
+                chart_path = build_patient_chart(
+                    pdf_path.stem, source_document=pdf_path.name, ocr_text=full_text
+                )
+                LOGGER.info("Patient chart written: %s", chart_path)
+            except Exception as chart_exc:  # pragma: no cover
+                LOGGER.warning(
+                    "Patient chart build failed for %s: %s", pdf_path.name, chart_exc
+                )
         except Exception as exc:  # pragma: no cover - defensive logging
             LOGGER.exception(
                 "OCR extraction failed for %s: %s", pdf_path, exc

@@ -1,0 +1,52 @@
+[TESSERACT – page 1]
+Castro Olsson, Jose Jonas pos: 04/10/2001 Patient Report
+
+Patient ID: 1263258 Age: 24 Account Number: 04075475
+Specimen ID: 211-496-5754-0 Sex: Male Ordering Physician: E HEFNER
+
+Ordered Items: H pylori Breath Test
+
+Date Collected: 07/30/2025
+
+H pylori Breath Test
+
+Test Current Result and Flag Units Reference Interval
+
+SH pylori Breath Test” : DEOL
+
+Disclaimer
+The Previous Result is listed for the most recent test performed by Labcorp in the past 5 years where there is sufficient patient demographic data to
+match the result to the patient. Results from certain tests are excluded from the Previous Result display.
+
+Icon Legend
+és Out of Reference Range #8 Critical or Alert
+
+Performing Labs
+O1: BN - Labcorp Burlington, 1447 York Court, Burlington, NC 27215-3361 Dir: Sanjai Nagendra, MD
+For inquiries, the physician may contact Branch: 800-888-1113 Lab: 800-762-4344
+
+Patient Details Physician Details Specimen Details
+
+Castro Olsson, Jose Jonas E HEFNER Specimen ID: 211-496-5754-0
+
+1306 BAKER PL E APT 14, FREDERICK, MD, Included Health, Inc. Control ID: 20465227075
+
+21702 1 California St Ste 2300, San Francisco, CA, Alternate Control Number: 1590838CE30520
+94111 Date Collected: 07/30/2025 0948 Local
+
+Phone: 301-401-5294 Date Received: 07/30/2025 0000 ET
+
+Date of Birth: 04/10/2001 Phone: 800-997-6196 Date Entered: 07/30/2025 1029 ET
+
+Age: 24 Account Number: 04075475 Date Reported: 07/31/2025 1710 ET
+
+Sex: Male Physician ID: 1245574326
+
+Patient ID: 1263258 NPI: 1245574326
+
+Alternate Patient ID:
+
+lolocorp Date Created and Stored 07/31/25 1714ET Final Report Page 1 of 1
+
+©2025 Laboratory Corporation of America® Holdings This document contains private and confidential health information protected by state and federal law.
+All Rights Reserved - Enterprise Report Version 2.00 If you have received this document in error please call 800-762-4344
