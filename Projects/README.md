@@ -1,39 +1,29 @@
-# Project Folder
+# Projects
 
-This folder contains various components of a project, including R Shiny apps, web-enabled database systems, and R packages.
+This folder groups coursework and small apps. Here is what is actually present in each subfolder.
 
-## R Shiny Apps
+## [`Py/`](Py/)
 
-### App 1 Name
-Description: Brief description of the first R Shiny app.
+Introductory **Python** exercises (syntax, variables, operations). Local virtualenv (`.venv/`) and IDE metadata stay on your machine and are not required for the exercises themselves.
 
-### App 2 Name
-Description: Brief description of the second R Shiny app.
+## [`R shiny Apps/`](R%20shiny%20Apps/)
 
-## Web-enabled Database Systems
+**R Shiny** applications. Currently includes:
 
-### Database System Name
-Description: Brief description of the web-enabled database system.
+- **`COVID-19 Map/`** — Dashboard using CDC provisional COVID-19 death counts, US map visualization (`echarts4r`), published to shinyapps.io. See [`R shiny Apps/README.md`](R%20shiny%20Apps/README.md).
 
-### Database System Name
-Description: Brief description of another web-enabled database system, if applicable.
+## [`Web-enabled Database Systems/`](Web-enabled%20Database%20Systems/)
 
-## R Packages
+**Airline Reservation DBMS** — PHP/HTML front end and SQL scripts for a web-enabled airline reservation database (group project assets under `Airline Reservation DBMS/FIles/`).
 
-### Package 1 Name
-Description: Brief description of the first R package.
+## [`Flight Database System/`](Flight%20Database%20System/)
 
-### Package 2 Name
-Description: Brief description of the second R package, if applicable.
+Standalone **PHP/HTML** pages for flight search, reservations, crew, and users. Related in theme to the airline DBMS coursework; files here are a flatter copy of similar exercises.
 
-## How to Use
+## [`R Packages/`](R%20Packages/)
 
-Provide instructions on how to use or run the R Shiny apps, web-enabled database systems, and R packages included in this project folder.
+Placeholder for future **R package** work. There is no package source yet—only documentation stubs. See [`R Packages/README.md`](R%20Packages/README.md).
 
-## Contributors
+---
 
-List contributors to this project, if applicable.
-
-## License
-
-Specify the license under which this project is distributed.
+To run something, open the relevant subfolder and follow its README or script comments. R Shiny apps expect R with the packages listed in `app.R`; the capstone pipeline is documented under [`../MS Capstone (HIFX)/README.md`](../MS%20Capstone%20(HIFX)/README.md).

@@ -110,10 +110,10 @@ It performs the following steps:
    - **Binarization using Otsu’s thresholding** (`cv2.threshold` with `THRESH_BINARY + THRESH_OTSU`): automatically selects an intensity threshold to segment foreground text from background, improving OCR performance on heterogeneous backgrounds.
 
 3. **Tesseract OCR (via `pytesseract`)**  
-   - Runs `pytesseract.image_to_string` on each preprocessed page.
-   - Uses configuration `--oem 3 --psm 6`:
-     - OEM 3: default LSTM‑based recognition engine.
-     - PSM 6: assumes a uniform block of text, which is typical for clinical narratives and problem lists.
+   - Runs `pytesseract.image_to_string` on each preprocessed page. Optionally, **EasyOCR** can assist on difficult handwriting or messy scans when `OCR_HANDWRITING_ASSIST=1` (see `ocr_engine.py`; requires installing `easyocr` separately).
+  - Uses configuration `--oem 3 --psm 4` (see `TESSERACT_CONFIG` in `ocr_engine.py`):
+    - OEM 3: default LSTM‑based recognition engine.
+    - PSM 4: single column of variable-size text, which fits many scanned clinical pages.
    - Concatenates page‑level results into a single string (`full_text`), preserving page separation with blank lines.
 
 4. **Temporary text export**  

@@ -1,23 +1,19 @@
-# Project Folder
+# R Shiny apps
 
-This folder contains R shiny apps.
+## COVID-19 Map
 
-## R Shiny Apps
+Folder: [`COVID-19 Map/`](COVID-19%20Map/)
 
-### App 1 Name
-Description: Brief description of the first R Shiny app.
+Interactive **Shiny** dashboard of provisional **COVID-19** (and related) death counts by state, using CDC data (`Provisional_COVID-19_Death_Counts_by_Week_Ending_Date_and_State_20240426.csv`) and a **US map** built with **echarts4r** (GeoJSON from the `topogram` US states data).
 
-### App 2 Name
-Description: Brief description of the second R Shiny app.
+**Run locally**
 
-## How to Use
+1. Install R and the packages used in `app.R` (e.g. `shiny`, `shinythemes`, `dplyr`, `echarts4r`, `lubridate`, `tidyr`, `shinydashboard`, `shinyWidgets`).
+2. Set the working directory to `COVID-19 Map/` so the CSV loads correctly.
+3. In R: `shiny::runApp("app.R")` or open `app.R` in RStudio and click **Run App**.
 
-Provide instructions on how to use or run the R Shiny apps, web-enabled database systems, and R packages included in this project folder.
+A deployment record for **shinyapps.io** is under `rsconnect/` for the published app URL shown in the `.dcf` file.
 
-## Contributors
+---
 
-List contributors to this project, if applicable.
-
-## License
-
-Specify the license under which this project is distributed.
+Add new apps as additional subfolders here and list them in this file.
