@@ -1,6 +1,6 @@
 # Abraham Joseph Olsson — portfolio repository
 
-Frederick, MD · abe.olsson@gmail.com · (301) 401-7740  
+Frederick, MD · ajo2@hood.edu
 MS Health Informatics (Hood College) · BA Biology · English & Spanish  
 
 This repository holds coursework samples and projects. Layout below matches the folders in the repo.
