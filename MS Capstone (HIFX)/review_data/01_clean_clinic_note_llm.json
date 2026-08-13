@@ -1,0 +1,102 @@
+{
+  "schema_version": 3,
+  "document_type": {
+    "code": "generic_clinical_document",
+    "display": "Generic Clinical Document"
+  },
+  "additional_fields": [
+    {
+      "key": "chief_complaint",
+      "label": "Chief Complaint",
+      "value": "Persistent cough and mild wheezing for 8 days.",
+      "source_hint": "",
+      "fhir_resource_hint": "Condition"
+    },
+    {
+      "key": "assessment",
+      "label": "Assessment",
+      "value": "Acute bronchitis. Mild intermittent asthma with acute exacerbation. Seasonal allergic rhinitis.",
+      "source_hint": "",
+      "fhir_resource_hint": "Condition"
+    },
+    {
+      "key": "plan",
+      "label": "Plan",
+      "value": "Albuterol inhaler 90 mcg, inhale 2 puffs every 6 hours as needed for wheezing. Cetirizine 10 mg by mouth daily for 14 days. Return if fever or shortness of breath worsens.",
+      "source_hint": "",
+      "fhir_resource_hint": "Procedure"
+    },
+    {
+      "key": "vitals",
+      "label": "Vitals",
+      "value": "Blood pressure 128/76 mmHg",
+      "source_hint": "",
+      "fhir_resource_hint": "Observation"
+    }
+  ],
+  "demographics": {
+    "patient_name": "",
+    "given_name": "",
+    "middle_name": "",
+    "family_name": "",
+    "date_of_birth": "1984-03-18",
+    "sex": "",
+    "mrn": "MRN-00074291",
+    "age": "",
+    "address": "",
+    "address_structured": {
+      "use": "",
+      "line": [
+        ""
+      ],
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "country": ""
+    },
+    "phone": ""
+  },
+  "providers_and_roles": {
+    "ordering_provider": "Alex Morgan, MD",
+    "referring_provider": "",
+    "lab_facility": ""
+  },
+  "items": [
+    {
+      "id": "1",
+      "raw_text": "Persistent cough and mild wheezing for 8 days.",
+      "category": "problem",
+      "entity_role": "patient",
+      "code_system": "",
+      "code": "",
+      "fhir_resource_type": "Condition"
+    },
+    {
+      "id": "2",
+      "raw_text": "Acute bronchitis. Mild intermittent asthma with acute exacerbation. Seasonal allergic rhinitis.",
+      "category": "problem",
+      "entity_role": "patient",
+      "code_system": "",
+      "code": "",
+      "fhir_resource_type": "Condition"
+    },
+    {
+      "id": "3",
+      "raw_text": "Albuterol inhaler 90 mcg, inhale 2 puffs every 6 hours as needed for wheezing. Cetirizine 10 mg by mouth daily for 14 days. Return if fever or shortness of breath worsens.",
+      "category": "order",
+      "entity_role": "patient",
+      "code_system": "",
+      "code": "",
+      "fhir_resource_type": "MedicationStatement"
+    },
+    {
+      "id": "4",
+      "raw_text": "Blood pressure 128/76 mmHg",
+      "category": "lab_result",
+      "entity_role": "patient",
+      "code_system": "",
+      "code": "",
+      "fhir_resource_type": "Observation"
+    }
+  ]
+}

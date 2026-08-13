@@ -1,0 +1,114 @@
+{
+  "resourceType": "Bundle",
+  "id": "1d9ed415-879c-4efe-817f-5d627516a7d5",
+  "meta": {
+    "lastUpdated": "2026-05-07T00:04:38Z",
+    "profile": [
+      "http://hl7.org/fhir/StructureDefinition/Bundle"
+    ]
+  },
+  "type": "collection",
+  "timestamp": "2026-05-07T00:04:38Z",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:302ca297-bb56-4d85-a7a6-fa1bb1cfacd9",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "Jordan-Rivera-01-01-1999-4-ordering",
+        "name": [
+          {
+            "text": "Dr. Blueberry"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a0ee823f-724f-4660-b899-5933732c6fc6",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "Jordan-Rivera-01-01-1999-4-patient",
+        "meta": {
+          "lastUpdated": "2026-05-07T00:04:38Z",
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Patient"
+          ]
+        },
+        "identifier": [],
+        "name": [
+          {
+            "family": "Rivera",
+            "given": [
+              "Jordan",
+              "Green"
+            ],
+            "text": "Jordan Green Rivera"
+          }
+        ],
+        "gender": "unknown",
+        "birthDate": "1999-01-01",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "123 Greenback Road"
+            ],
+            "city": "Greensburg",
+            "state": "Maryland",
+            "text": "123 Greenback Road, Greensburg, Maryland"
+          }
+        ],
+        "extension": [
+          {
+            "url": "http://example.org/fhir/StructureDefinition/source-document",
+            "valueString": "Jordan_Rivera_01-01-1999_4.pdf"
+          },
+          {
+            "url": "http://example.org/fhir/StructureDefinition/age-years-text",
+            "valueString": "27"
+          },
+          {
+            "url": "http://example.org/fhir/StructureDefinition/source-document-type",
+            "valueString": "Laboratory report"
+          },
+          {
+            "url": "http://example.org/fhir/StructureDefinition/source-document-type-code",
+            "valueString": "laboratory_report"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "reference": "urn:uuid:302ca297-bb56-4d85-a7a6-fa1bb1cfacd9",
+            "display": "Dr. Blueberry"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8ec3908e-916e-4586-95c7-2d715b5c887f",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "Jordan-Rivera-01-01-1999-4-add-0",
+        "meta": {
+          "lastUpdated": "2026-05-07T00:04:38Z",
+          "profile": [
+            "http://hl7.org/fhir/StructureDefinition/Observation"
+          ]
+        },
+        "status": "final",
+        "code": {
+          "text": "H. pylori test result"
+        },
+        "subject": {
+          "reference": "urn:uuid:a0ee823f-724f-4660-b899-5933732c6fc6"
+        },
+        "valueString": "Negative for H. Pylori",
+        "extension": [
+          {
+            "url": "http://example.org/fhir/StructureDefinition/llm-fhir-hint",
+            "valueString": "Observation"
+          }
+        ]
+      }
+    }
+  ]
+}

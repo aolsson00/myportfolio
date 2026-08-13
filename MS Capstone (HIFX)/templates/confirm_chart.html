@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Confirm demographics – {{ filename }}</title>
+    <title>Confirm chart data – {{ filename }}</title>
     <style>
       body {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -75,16 +75,82 @@
         font-family: inherit;
         font-size: 1rem;
       }
+      .progress-wrap {
+        display: none;
+        margin: 1rem 0;
+        max-width: 36rem;
+      }
+      .progress-wrap.visible { display: block; }
+      .progress-label { font-size: 0.9rem; color: #374151; margin-bottom: 0.35rem; }
+      .progress-track {
+        height: 10px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #059669, #2563eb);
+        border-radius: 999px;
+        transition: width 0.2s ease;
+      }
+      .progress-detail { font-size: 0.8rem; color: #6b7280; margin-top: 0.35rem; }
+      .fhir-err { color: #b91c1c; font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+      .fhir-err.visible { display: block; }
+      button[type="submit"]:disabled { opacity: 0.65; cursor: not-allowed; }
+      .confirm-all-row {
+        padding: 0.75rem 0;
+        margin-bottom: 0.5rem;
+        border-top: 1px solid #e5e7eb;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .confirm-all-row label { cursor: pointer; font-weight: 600; }
+      .confirm-all-row input { margin-right: 0.35rem; }
+      .doc-type-banner {
+        background: #eff6ff;
+        border: 1px solid #93c5fd;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+        color: #1e3a5f;
+      }
+      .section-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 1.25rem 0 0.5rem;
+        color: #111827;
+      }
+      .field-hint {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0.25rem 0 0;
+      }
+      .fhir-hint-badge {
+        font-size: 0.75rem;
+        color: #4b5563;
+        font-weight: normal;
+      }
     </style>
   </head>
-  <body>
-    <h1>Confirm demographics</h1>
-    <p class="subtitle">Edit any value, then check every box. The EHR-ready JSON is written only when <strong>all</strong> boxes are checked. Patient vs ordering provider vs lab are separated when the local LLM ran after OCR.</p>
+  <body data-job-status-template="{{ url_for('api_job_status', job_id='__JOB__') }}" data-confirm-api="{{ url_for('api_confirm_fhir') }}">
+    <h1>Confirm chart data</h1>
+    <p class="subtitle">Edit any value, then check every confirmation box. A FHIR Bundle (<code>*_chart.fhir.json</code>) is written only when <strong>all</strong> are checked — core demographics <em>and</em> each document-specific row (even if you mark a row to be left out of FHIR). Use <strong>Do not include in FHIR</strong> on a row to skip useless OCR noise; blank values are never exported.</p>
+
+    {% if document_type_display | default('') %}
+    <div class="doc-type-banner">
+      <strong>Document type (LLM):</strong> {{ document_type_display | e }}
+      {% if document_type_code | default('') %}
+        <span style="color:#6b7280;"> — <code>{{ document_type_code | e }}</code></span>
+      {% endif %}
+    </div>
+    {% endif %}
 
     {% if sparse_extraction | default(false) %}
     <div class="notice">
       <strong>Little or nothing was extracted from this scan</strong>
-      That often happens with <strong>handwriting</strong> or very poor image quality—OCR is tuned for printed text. Type the correct information by hand in the fields below (leave blank or use “N/A” where appropriate), then confirm each row. You are still verifying what will go into the EHR-ready file.
+      That often happens with <strong>handwriting</strong> or very poor image quality—OCR is tuned for printed text. Type the correct information by hand in the fields below (leave blank or use “N/A” where appropriate), then confirm each row. You are still verifying what will go into the FHIR export.
     </div>
     {% endif %}
 
@@ -97,12 +163,20 @@
     {% endwith %}
 
     <div class="form-box">
-      <form method="post">
+      <form id="confirm-form" method="post" action="{{ url_for('confirm_chart', filename=filename) }}">
+        <input type="hidden" name="filename" value="{{ filename | e }}" id="confirm-filename">
+        <input type="hidden" name="address_structured_json" id="address_structured_json" value="{{ address_structured_json | default('{}') | e }}">
+        <input type="hidden" name="document_type_code" value="{{ document_type_code | default('') | e }}">
+        <input type="hidden" name="document_type_display" value="{{ document_type_display | default('') | e }}">
+        <div class="section-title">Core demographics (FHIR Patient)</div>
         {% for attr in chart_attrs %}
           <div class="row">
             <label class="field-label" for="attr-{{ attr }}">{{ attr | replace('_', ' ') | title }}</label>
             {% if attr == 'address' %}
               <textarea class="field-input" id="attr-{{ attr }}" name="{{ attr }}" placeholder="Street, city, state, ZIP (type manually if OCR was empty)">{{ chart.get(attr, '') | e }}</textarea>
+              {% if address_structured_json | default('{}') != '{}' and address_structured_json | default('') != '' %}
+              <p style="font-size:0.8rem;color:#4b5563;margin:0.35rem 0 0;">The local LLM also supplied <strong>structured</strong> street/city/state/ZIP for FHIR <code>Patient.address</code>; that data is kept in a hidden field and merged into the export with this text as <code>text</code>.</p>
+              {% endif %}
             {% else %}
               <input type="text" id="attr-{{ attr }}" name="{{ attr }}" value="{{ chart.get(attr, '') | e }}" placeholder="Type or correct value — (none extracted) is normal for handwriting">
             {% endif %}
@@ -112,12 +186,167 @@
             </div>
           </div>
         {% endfor %}
+
+        {% if extra_fields | default([]) | length > 0 %}
+        <div class="section-title">Document-specific fields (from OCR + LLM)</div>
+        <p style="font-size:0.88rem;color:#4b5563;margin:0 0 0.75rem;line-height:1.45;">These rows depend on the type of record. Medication lines are shortened to <strong>name + strength/dose</strong> when possible. Confirmed, non-excluded rows export as FHIR <code>Observation</code> resources (hint stored for future profiling). Check <strong>Do not include in FHIR</strong> to drop a useless row from the bundle — it will not create an empty resource.</p>
+        {% for ef in extra_fields %}
+          <div class="row">
+            <label class="field-label" for="extra-{{ ef.key }}">{{ ef.label | e }} <span class="fhir-hint-badge">({{ ef.fhir_resource_hint | default('Observation') | e }})</span></label>
+            <input type="hidden" name="extra_label_{{ ef.key }}" value="{{ ef.label | e }}">
+            <input type="text" id="extra-{{ ef.key }}" name="extra_{{ ef.key }}" value="{{ ef.value | e }}" placeholder="Value from document (editable)">
+            {% if ef.hint | default('') %}
+              <p class="field-hint">{{ ef.hint | e }}</p>
+            {% endif %}
+            <div class="confirm-wrap">
+              <input type="checkbox" id="exclude-fhir-{{ ef.key }}" name="extra_exclude_fhir_{{ ef.key }}" value="on" {{ 'checked' if ef.get('exclude_from_fhir') else '' }}>
+              <label for="exclude-fhir-{{ ef.key }}">Do not include in FHIR export</label>
+            </div>
+            <div class="confirm-wrap">
+              <input type="checkbox" id="confirm-extra-{{ ef.key }}" name="confirm_extra_{{ ef.key }}" {{ 'checked' if extra_confirmed is defined and extra_confirmed.get(ef.key) else '' }}>
+              <label for="confirm-extra-{{ ef.key }}">I confirm I have reviewed this row (required even if excluded from FHIR)</label>
+            </div>
+          </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="row confirm-all-row">
+          <label>
+            <input type="checkbox" id="confirm-all-demographics">
+            Confirm all fields above
+          </label>
+          <span style="font-size: 0.85rem; color: #6b7280; display: block; margin-top: 0.35rem; font-weight: normal;">Checks every row at once. You can still change individual boxes afterward.</span>
+        </div>
         <div class="row">
-          <button type="submit">Write EHR-ready file</button>
+          <button type="submit" id="fhir-btn">Write FHIR Bundle</button>
         </div>
       </form>
     </div>
 
+    <div id="fhir-progress" class="progress-wrap" aria-live="polite">
+      <div class="progress-label" id="fhir-progress-label">Generating FHIR…</div>
+      <div class="progress-track">
+        <div id="fhir-progress-fill" class="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      </div>
+      <div class="progress-detail" id="fhir-progress-detail"></div>
+    </div>
+    <div id="fhir-err" class="fhir-err"></div>
+
     <p class="back"><a href="{{ url_for('index') }}">&larr; Back to documents</a></p>
+
+    <script>
+(function () {
+  var form = document.getElementById("confirm-form");
+  var btn = document.getElementById("fhir-btn");
+  var wrap = document.getElementById("fhir-progress");
+  var label = document.getElementById("fhir-progress-label");
+  var fill = document.getElementById("fhir-progress-fill");
+  var detail = document.getElementById("fhir-progress-detail");
+  var errBox = document.getElementById("fhir-err");
+  var apiUrl = document.body.getAttribute("data-confirm-api");
+  var tpl = document.body.getAttribute("data-job-status-template") || "/api/job/__JOB__";
+  var masterConfirm = document.getElementById("confirm-all-demographics");
+  var fieldConfirms = form.querySelectorAll('input[type="checkbox"][name^="confirm_"]');
+
+  function syncDemographicsMaster() {
+    if (!masterConfirm || !fieldConfirms.length) return;
+    var n = fieldConfirms.length;
+    var c = 0;
+    for (var i = 0; i < n; i++) {
+      if (fieldConfirms[i].checked) c++;
+    }
+    masterConfirm.checked = c === n && n > 0;
+    masterConfirm.indeterminate = c > 0 && c < n;
+  }
+
+  if (masterConfirm) {
+    masterConfirm.addEventListener("change", function () {
+      var on = masterConfirm.checked;
+      for (var i = 0; i < fieldConfirms.length; i++) {
+        fieldConfirms[i].checked = on;
+      }
+      masterConfirm.indeterminate = false;
+    });
+    for (var j = 0; j < fieldConfirms.length; j++) {
+      fieldConfirms[j].addEventListener("change", syncDemographicsMaster);
+    }
+    syncDemographicsMaster();
+  }
+
+  function setBar(pct, title, msg) {
+    pct = Math.max(0, Math.min(100, pct));
+    fill.style.width = pct + "%";
+    fill.setAttribute("aria-valuenow", String(Math.round(pct)));
+    label.textContent = title || "Working…";
+    detail.textContent = msg || "";
+  }
+
+  function pollJob(jobId) {
+    fetch(tpl.replace("__JOB__", encodeURIComponent(jobId)))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.status === "complete" && data.redirect) {
+          setBar(100, "Done", data.message || "");
+          window.location.href = data.redirect;
+          return;
+        }
+        if (data.status === "error") {
+          btn.disabled = false;
+          wrap.classList.remove("visible");
+          errBox.textContent = data.error || data.message || "Could not write FHIR.";
+          errBox.classList.add("visible");
+          return;
+        }
+        var p = typeof data.percent === "number" ? data.percent : 0;
+        setBar(p, "Generating FHIR Bundle…", data.message || "");
+        setTimeout(function () { pollJob(jobId); }, 350);
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        wrap.classList.remove("visible");
+        errBox.textContent = "Status error: " + e;
+        errBox.classList.add("visible");
+      });
+  }
+
+  form.addEventListener("submit", function (ev) {
+    if (!window.FormData || !window.fetch) return;
+    ev.preventDefault();
+    errBox.classList.remove("visible");
+    errBox.textContent = "";
+
+    var checks = form.querySelectorAll('input[type="checkbox"][name^="confirm_"]');
+    for (var i = 0; i < checks.length; i++) {
+      if (!checks[i].checked) {
+        errBox.textContent = "Please confirm every attribute (check all boxes).";
+        errBox.classList.add("visible");
+        return;
+      }
+    }
+
+    btn.disabled = true;
+    wrap.classList.add("visible");
+    setBar(5, "Starting…", "Preparing FHIR export…");
+
+    var fd = new FormData(form);
+    fetch(apiUrl, { method: "POST", body: fd })
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (j) { throw new Error(j.error || r.statusText); });
+        return r.json();
+      })
+      .then(function (res) {
+        if (res.error) throw new Error(res.error);
+        setBar(15, "Generating FHIR Bundle…", "");
+        pollJob(res.job_id);
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        wrap.classList.remove("visible");
+        errBox.textContent = e.message || String(e);
+        errBox.classList.add("visible");
+      });
+  });
+})();
+    </script>
   </body>
   </html>

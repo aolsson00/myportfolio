@@ -78,14 +78,18 @@
       {% endif %}
     {% endwith %}
 
+    {% if fhir_saved | default(false) %}
+    <div class="flash flash-success">FHIR Bundle saved successfully. You can download it from the list below.</div>
+    {% endif %}
+
     <section class="doc-list">
       <h2>Uploaded / Processed PDFs</h2>
-      <p class="hint" style="margin-top: 0;">Date shown is when the file was added or last updated in this folder (from your computer’s file metadata).</p>
+      <p class="hint" style="margin-top: 0;">Date shown is when the file was added or last updated in this folder (from your computer’s file metadata). This list is for reference only.</p>
       {% if document_entries %}
         <ul>
           {% for row in document_entries %}
             <li class="doc-item">
-              <a href="{{ url_for('review', filename=row.name) }}">{{ row.name }}</a>
+              <span>{{ row.name }}</span>
               <span class="file-date">{{ row.date }}</span>
             </li>
           {% endfor %}
@@ -98,7 +102,7 @@
     </section>
 
     <section class="doc-list">
-      <h2>EHR-ready files</h2>
+      <h2>FHIR exports</h2>
       <p class="hint" style="margin-top: 0;">Date is file creation time when available (otherwise last modified).</p>
       {% if ehr_ready_entries %}
         <ul>
@@ -112,7 +116,7 @@
         </ul>
       {% else %}
         <p class="empty">
-          No EHR-ready files in <code>ehr_ready/</code>. Confirm demographics after uploading to create one.
+          No FHIR bundles in <code>ehr_ready/</code> (files named <code>*_chart.fhir.json</code>). Confirm demographics after uploading to create one.
         </p>
       {% endif %}
     </section>

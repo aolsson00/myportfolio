@@ -1,0 +1,16 @@
+# Optional: bake instructions + gold FHIR into a custom Ollama model (not required for the app).
+# The app already injects `resources/clinical_context_for_llm.txt` into each chat prompt
+# (see llm_clinical_context.py). Use a Modelfile only if you want a baseline SYSTEM prompt
+# baked into the model (e.g. temperature), not as the primary way to add jargon.
+# 1. Copy this file to Modelfile and adjust FROM / paths.
+# 2. ollama create hifx-clinical -f Modelfile
+# 3. Set LLM_MODEL=hifx-clinical in .env
+#
+# FROM llama3
+# SYSTEM """You follow FHIR-aligned extraction rules. Patient fields are only the subject of care."""
+# PARAMETER temperature 0.1
+# (Paste contents of gold_fhir_bundle.json into SYSTEM or a MESSAGE if desired.)
+
+FROM llama3
+
+SYSTEM You are a clinical document analyst. Prefer empty strings over guessing. Separate patient from ordering physician, referring physician, and lab facility. Align extracted facts with FHIR Patient / Practitioner / Organization roles.

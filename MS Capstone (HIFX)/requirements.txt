@@ -7,6 +7,13 @@ Pillow
 flask
 requests
 
+# Local NLP (sentence segmentation + NER for extraction / LLM context)
+spacy>=3.7.0
+# After install: python -m spacy download en_core_web_sm
+# Or: pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+# Disable spaCy at runtime: SKIP_SPACY=1
+# Disable NLP summary prefix for LLM: NLP_LLM_SUMMARY=0
+
 # Optional: better OCR on some handwriting / messy scans (large PyTorch-based install)
 # pip install easyocr
 # Then enable via upload checkbox or: export OCR_HANDWRITING_ASSIST=1

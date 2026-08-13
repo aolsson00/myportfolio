@@ -243,7 +243,8 @@ class PdfIngestionEventHandler(FileSystemEventHandler):
         """
         try:
             LOGGER.info("Starting OCR for processed PDF: %s", pdf_path)
-            full_text, txt_path, llm_ok = extract_text_from_pdf(str(pdf_path))
+            full_text, txt_path, llm_ok, pdf_final = extract_text_from_pdf(str(pdf_path))
+            pdf_path = pathlib.Path(pdf_final)
             LOGGER.info(
                 "OCR completed for %s; text length=%d; txt_path=%s; llm_ok=%s",
                 pdf_path.name,
@@ -256,12 +257,12 @@ class PdfIngestionEventHandler(FileSystemEventHandler):
                     "LLM extraction failed for %s — ensure Ollama is running or set SKIP_LLM=1",
                     pdf_path.name,
                 )
-            # Build EHR-ready patient chart (pass OCR text to avoid re-reading)
+            # Build FHIR Bundle for patient chart (pass OCR text to avoid re-reading)
             try:
                 chart_path = build_patient_chart(
                     pdf_path.stem, source_document=pdf_path.name, ocr_text=full_text
                 )
-                LOGGER.info("Patient chart written: %s", chart_path)
+                LOGGER.info("FHIR Bundle written: %s", chart_path)
             except Exception as chart_exc:  # pragma: no cover
                 LOGGER.warning(
                     "Patient chart build failed for %s: %s", pdf_path.name, chart_exc

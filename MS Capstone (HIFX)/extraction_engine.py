@@ -20,7 +20,55 @@ import pathlib
 from dataclasses import dataclass, asdict
 from typing import List
 
+from clinical_lexicon import guess_category_from_keywords
+from nlp_local import extract_candidates_from_text
+from text_cleaning import clean_clinical_ocr_text
+
 PROJECT_ROOT = pathlib.Path(".").resolve()
+
+
+def _items_from_ocr_file(doc_stem: str) -> List[ExtractedItem]:
+    """Rule-based + local NLP candidates from ``temp_extractions`` (no LLM)."""
+    ocr_text_path = PROJECT_ROOT / "temp_extractions" / f"{doc_stem}.txt"
+    if not ocr_text_path.exists():
+        raise FileNotFoundError(f"OCR text file not found: {ocr_text_path}")
+
+    raw = ocr_text_path.read_text(encoding="utf-8")
+    body = clean_clinical_ocr_text(raw)
+    items: List[ExtractedItem] = []
+    candidates = extract_candidates_from_text(body)
+    for idx, (cleaned, category, _conf, nlp_tags) in enumerate(candidates, start=1):
+        item = ExtractedItem(
+            id=str(idx),
+            raw_text=cleaned,
+            category=category,
+            code_system="",
+            code="",
+            fhir_resource_type="Observation" if category == "lab_result" else "",
+            nlp_tags=nlp_tags,
+        )
+        items.append(item)
+
+    if not items:
+        for idx, line in enumerate(body.splitlines(), start=1):
+            cleaned = line.strip()
+            if not cleaned:
+                continue
+            category = guess_category_from_keywords(cleaned.lower())
+            if category == "other":
+                continue
+            items.append(
+                ExtractedItem(
+                    id=str(idx),
+                    raw_text=cleaned,
+                    category=category,
+                    code_system="",
+                    code="",
+                    fhir_resource_type="Observation" if category == "lab_result" else "",
+                )
+            )
+
+    return items
 
 
 @dataclass
@@ -45,6 +93,8 @@ class ExtractedItem:
         Type of FHIR resource this line most closely maps to (e.g., "Observation").
     entity_role : str
         Optional hint from the LLM, e.g. patient vs ordering_provider vs lab_facility.
+    nlp_tags : str
+        When rule-based + spaCy path: short \"text:ENTITY\" list from local NLP.
     """
 
     id: str
@@ -54,46 +104,7 @@ class ExtractedItem:
     code: str = ""
     fhir_resource_type: str = ""
     entity_role: str = ""
-
-
-# Precomputed keyword sets for fast "in" checks in _guess_category.
-_KEYWORDS_DEMOGRAPHIC = frozenset({
-    "dob", "date of birth", "birth date", "mrn", "medical record",
-    "patient name", "name:", "sex:", "male", "female", "age:",
-})
-_KEYWORDS_LAB = frozenset({
-    "lab", "result", "hgb", "hemoglobin", "glucose", "a1c",
-    "na ", "k ", "creatinine",
-})
-_KEYWORDS_MED = frozenset({
-    "medication", "medications", "rx", "tablet", "capsule",
-    "mg ", "mcg", "po ", "bid", "tid", "qhs",
-})
-_KEYWORDS_PROBLEM = frozenset({
-    "problem list", "diagnosis", "diagnoses", "dx:", "assessment", "icd",
-})
-_KEYWORDS_ORDER = frozenset({
-    "order:", "ordered", "test requested", "lab order", "imaging order",
-})
-
-
-def _guess_category(line: str) -> str:
-    """
-    Very simple heuristic to label a line.
-    Uses precomputed sets for O(1) keyword presence checks.
-    """
-    lower = line.lower()
-    if any(k in lower for k in _KEYWORDS_DEMOGRAPHIC):
-        return "demographic"
-    if any(k in lower for k in _KEYWORDS_LAB):
-        return "lab_result"
-    if any(k in lower for k in _KEYWORDS_MED):
-        return "medication"
-    if any(k in lower for k in _KEYWORDS_PROBLEM):
-        return "problem"
-    if any(k in lower for k in _KEYWORDS_ORDER):
-        return "order"
-    return "other"
+    nlp_tags: str = ""
 
 
 def load_extracted_items(doc_stem: str) -> List[ExtractedItem]:
@@ -102,8 +113,11 @@ def load_extracted_items(doc_stem: str) -> List[ExtractedItem]:
 
     Preference order:
     1. If an LLM-derived JSON file exists in `review_data/<doc_stem>_llm.json`,
-       load items from there.
-    2. Otherwise, fall back to simple rule-based extraction over the OCR text.
+       load items from there **when non-empty**.
+    2. If the LLM file exists but ``items`` is empty (or only blank rows), use the
+       same rule-based / NLP scan as when no LLM file is present — so review is not
+       stuck blank when the model skips structured items.
+    3. Otherwise run that scan directly from OCR text.
     """
     # 1) Try LLM-derived JSON first (v2 object with demographics + items, or legacy list)
     llm_json_path = PROJECT_ROOT / "review_data" / f"{doc_stem}_llm.json"
@@ -130,36 +144,14 @@ def load_extracted_items(doc_stem: str) -> List[ExtractedItem]:
                 code=str(entry.get("code", "")),
                 fhir_resource_type=str(entry.get("fhir_resource_type", "")),
                 entity_role=str(entry.get("entity_role", "")),
+                nlp_tags=str(entry.get("nlp_tags", "")),
             )
             items.append(item)
-        return items
+        meaningful = [i for i in items if (i.raw_text or "").strip()]
+        if meaningful:
+            return items
 
-    # 2) Fallback: rule-based extraction from OCR text
-    ocr_text_path = PROJECT_ROOT / "temp_extractions" / f"{doc_stem}.txt"
-    if not ocr_text_path.exists():
-        raise FileNotFoundError(f"OCR text file not found: {ocr_text_path}")
-
-    items: List[ExtractedItem] = []
-    with ocr_text_path.open("r", encoding="utf-8") as f:
-        for idx, line in enumerate(f, start=1):
-            cleaned = line.strip()
-            if not cleaned:
-                continue
-            category = _guess_category(cleaned)
-            # Only keep lines that look clinically relevant
-            if category == "other":
-                continue
-            item = ExtractedItem(
-                id=str(idx),
-                raw_text=cleaned,
-                category=category,
-                code_system="",
-                code="",
-                fhir_resource_type="Observation" if category == "lab_result" else "",
-            )
-            items.append(item)
-
-    return items
+    return _items_from_ocr_file(doc_stem)
 
 
 def save_confirmations(doc_stem: str, confirmations: dict) -> pathlib.Path:

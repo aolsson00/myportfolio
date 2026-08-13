@@ -1,0 +1,107 @@
+# Optional glossary for the local LLM prompt (llm_extractor.py).
+# Edit freely; lines starting with # are stripped when loaded.
+# Purpose: help the model recognize headings, abbreviations, and typical clinical phrasing
+# when categorizing OCR lines — not to invent facts absent from the document.
+
+## Sections & headings
+Chief complaint (CC), History of present illness (HPI), Review of systems (ROS),
+Physical examination (PE), Assessment & Plan (A/P), Impression, Problem list,
+Medications, Allergies, Vitals / Vital signs, Laboratory / Labs / Chemistries,
+Imaging / Radiology, Procedures, Discharge summary, Progress note, Consult note.
+
+## Vital signs & measurements
+BP blood pressure (mmHg), HR heart rate (bpm), RR respiratory rate, Temp temperature,
+SpO2 oxygen saturation / pulse ox, BMI, Height, Weight, Pain score.
+
+## Common lab shorthand
+CBC complete blood count; Hgb hemoglobin; Hct hematocrit; WBC white blood cells;
+RBC red blood cells; Plt platelets; CMP comprehensive metabolic panel;
+BMP basic metabolic panel; LFTs liver panel; BUN blood urea nitrogen;
+Cr creatinine; eGFR / GFR glomerular filtration rate; Glu glucose;
+HbA1c / A1c glycated hemoglobin; UA urinalysis; INR; PT / PTT coagulation;
+TSH thyroid stimulating hormone; Troponin; BNP; lactate; ABG arterial blood gas.
+
+## Imaging / procedures (text cues)
+CXR chest X-ray; CT computed tomography; MRI magnetic resonance; US ultrasound;
+EKG / ECG electrocardiogram; Echo echocardiogram; colonoscopy; endoscopy.
+
+## Medication directions (often adjacent to drug names)
+PO by mouth; IV intravenous; IM intramuscular; SQ / SC subcutaneous;
+BID twice daily; TID three times daily; QID four times daily; QHS at bedtime;
+PRN as needed; Q(n)H every n hours; AC before meals; HS at bedtime.
+
+## Problem-oriented language
+Acute vs chronic; exacerbation; remission; rule out / R/O; differential diagnosis;
+history of; PMH past medical history; FH family history; SH social history;
+NKDA no known drug allergies; NKA no known allergies.
+
+## Document-type cues
+Laboratory report: analyte, result, units, reference range, abnormal flag H/L.
+Pathology / Surgical pathology: specimen, diagnosis, margins, staging.
+Operative note: preoperative / postoperative diagnosis, procedure performed.
+
+## Document archetypes (scanned PDFs — typical OCR behavior)
+
+These patterns match synthetic legacy-ingestion test PDFs. Use them to interpret **noisy**
+layout; still extract only text that is **actually present** in the OCR block.
+
+### Clean / typed clinic note (single column)
+Demographics may be **sparse**: e.g. only DOB and MRN on separate lines with no patient name
+in the header. Names may appear only on lines starting with **Patient:** or in a progress-note
+style block. Section headers (Chief complaint, Assessment, Plan, Vitals) may stand alone on
+one line with narrative on the following lines — pair headings with their body text when
+building **items** and **additional_fields**. OCR may typo common words (e.g. "Outpatient"
+as "Ouipatient"); fix only in **values** when the intent is obvious from context, never invent
+a name or MRN.
+
+### Progress note — low contrast scan
+Expect **one-line demographic run-ons**: `Patient: … DOB: … MRN:` with MRN possibly on the
+next line. Vitals may use odd tokens (`Ib` vs **lb** for pounds). Assessment / Plan bullets
+are still clinical facts — categorize meds and orders appropriately.
+
+### Medication reconciliation
+Often a **list or pseudo-table** of drug + strength + dosing sentence + **Start date** or
+status (**Stopped**, **Completed**, hold). Typos break inside instructions (e.g. `tabl@ike`
+→ "tablet"). Each active or historical med line → **items** with category **medication**;
+include status/date in **raw_text** or **additional_fields**. **Allergies:** lines after
+"Allergies:" → **additional_fields** with **fhir_resource_hint** AllergyIntolerance (or
+**items** category **problem** if only narrative).
+
+### Lab results — table layout
+OCR often **shreds tables**: headers and cells collapse, pipe characters appear, or text is
+unreadable gibberish. **Do not guess** analyte values or reference ranges from thin air.
+When the table is garbled, emit **few or no** lab_result **items**; you may still capture a
+**Comment:** or impression line if readable. Prefer leaving **code** / **code_system** empty.
+
+### Immunization record
+Expect vaccine names, dates, lot numbers, sites — often in a **grid** that OCR reads poorly.
+Extract only immunizations clearly present; if the body is blank or noise, return sparse
+**items** rather than fabricated doses.
+
+### Checkbox / intake form
+Checkboxes appear as **|**, **[**, **]**, **X**, stray **A** or **1** before a label, or
+merged lines (`| Type 2 diabetes`). Treat each recognizable problem line as a **problem** or
+**demographic** **item** when it names a condition; ignore pure punctuation artifacts.
+**Free text** sections after a heading belong in **additional_fields** or **items** as
+verbatim useful snippets.
+
+### Discharge summary — multi-page
+**First page** often has admission/discharge dates, reason for admission, and MRN/DOB.
+**Hospital course** may repeat boilerplate day-by-day lines — **deduplicate** clinically:
+summarize the distinct treatments and course once in **additional_fields** (e.g. key meds,
+oxygen, procedures) instead of emitting six identical rows. **Discharge medications** and
+**follow-up** often appear on **later pages** — if the OCR excerpt includes an explicit
+"middle omitted" marker, use **both** head and tail segments; never assume tail content you
+cannot see.
+
+### Fax / skewed / noisy ED or urgent note
+Heavy noise: broken words, stray punctuation, **FAX** headers, skewed columns. Patient line
+may be partially readable (`Patient; Jordan … DOB … MRN`). Mine **demographics** only from
+fragments that clearly match a pattern; otherwise leave empty. Clinical content may be
+fragmentary — extract **short factual phrases** you can defend from OCR; avoid long coherent
+paragraphs that are not in the text.
+
+### Synthetic banner lines
+Lines like **SYNTHETIC TEST DOCUMENT - NO REAL PATIENT DATA** are **not** clinical facts;
+do not use them as patient name or diagnosis. You may still use real-looking names/DOB/MRN
+**printed below** that banner if they appear in OCR.

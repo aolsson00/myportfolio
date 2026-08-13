@@ -1,0 +1,54 @@
+{
+  "schema_version": 3,
+  "document_type": {
+    "code": "laboratory_report",
+    "display": "Laboratory report"
+  },
+  "additional_fields": [
+    {
+      "key": "h_pylori_result",
+      "label": "H. pylori test result",
+      "value": "Negative",
+      "source_hint": "",
+      "fhir_resource_hint": "Observation"
+    }
+  ],
+  "demographics": {
+    "patient_name": "Jordan Green Rivera",
+    "given_name": "Jordan",
+    "middle_name": "Green",
+    "family_name": "Rivera",
+    "date_of_birth": "1999-01-01",
+    "sex": "",
+    "mrn": "",
+    "age": "",
+    "address": "123 Greenback Road, Greensburg, Maryland",
+    "address_structured": {
+      "use": "home",
+      "line": [
+        "123 Greenback Road"
+      ],
+      "city": "Greensburg",
+      "state": "Maryland",
+      "postalCode": "",
+      "country": ""
+    },
+    "phone": ""
+  },
+  "providers_and_roles": {
+    "ordering_provider": "Dr. Blueberry",
+    "referring_provider": "",
+    "lab_facility": ""
+  },
+  "items": [
+    {
+      "id": "1",
+      "raw_text": "Negative for H. Pylori",
+      "category": "lab_result",
+      "entity_role": "patient",
+      "code_system": "",
+      "code": "",
+      "fhir_resource_type": "Observation"
+    }
+  ]
+}

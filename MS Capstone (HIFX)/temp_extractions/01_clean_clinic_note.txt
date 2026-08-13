@@ -1,0 +1,29 @@
+[TESSERACT - page 1]
+SYNTHETIC TEST DOCUMENT - NO REAL PATIENT DATA
+
+Ouipatient Clinic Note
+
+Purpose: clean typed note with demographics, diagnoses, vitals, medication order, and plan.
+
+DOB 1984-03-18
+
+MRN MRN-00074291
+Encounter date 2026-04-22
+Provider Alex Morgan, MD
+
+Chief complaint
+
+Persistent cough and mild wheezing for 8 days.
+
+Assessment
+
+Acute bronchitis. Mild intermittent asthma with acute exacerbation. Seasonal allergic rhinitis.
+
+Plan
+
+Albuterol inhaler 90 mcg, inhale 2 puffs every 6 hours as needed for wheezing. Cetirizine 10 mg by mouth daily for 14
+days. Return if fever or shortness of breath worsens.
+
+Vitals
+
+Blood pressure 128/76 mmHg

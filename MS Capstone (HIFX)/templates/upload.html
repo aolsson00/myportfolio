@@ -30,14 +30,42 @@
         color: #fff;
         cursor: pointer;
       }
-      .upload-box button:hover { background: #1d4ed8; }
+      .upload-box button:hover:not(:disabled) { background: #1d4ed8; }
+      .upload-box button:disabled { opacity: 0.65; cursor: not-allowed; }
       .flash { padding: 0.5rem 0.75rem; border-radius: 4px; margin-bottom: 0.75rem; }
       .flash-success { background-color: #e6ffed; border: 1px solid #8fd19e; }
       .flash-warning { background-color: #fff8e6; border: 1px solid #e6c35c; }
       .flash-error { background-color: #ffecec; border: 1px solid #ff9b9b; }
+      .progress-wrap {
+        display: none;
+        margin-top: 1rem;
+        max-width: 28rem;
+      }
+      .progress-wrap.visible { display: block; }
+      .progress-label {
+        font-size: 0.9rem;
+        color: #374151;
+        margin-bottom: 0.35rem;
+      }
+      .progress-track {
+        height: 10px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #2563eb, #7c3aed);
+        border-radius: 999px;
+        transition: width 0.2s ease;
+      }
+      .progress-detail { font-size: 0.8rem; color: #6b7280; margin-top: 0.35rem; }
+      .err-box { color: #b91c1c; font-size: 0.9rem; margin-top: 0.5rem; display: none; }
+      .err-box.visible { display: block; }
     </style>
   </head>
-  <body>
+  <body data-job-status-template="{{ url_for('api_job_status', job_id='__JOB__') }}">
     <h1>Import PDF</h1>
     <p>Upload a scanned PDF. It will be moved to <code>processed_scans/</code> and OCR will run. For <strong>handwritten</strong> notes, check the box below (requires <code>pip install easyocr</code>; slower, larger download).</p>
 
@@ -50,17 +78,131 @@
     {% endwith %}
 
     <div class="upload-box">
-      <form method="post" enctype="multipart/form-data">
+      <form id="upload-form" method="post" enctype="multipart/form-data" action="{{ url_for('upload') }}">
         <label for="pdf">Choose a PDF file:</label><br>
         <input type="file" id="pdf" name="pdf" accept=".pdf,application/pdf" required><br>
         <label style="display:block;margin:0.75rem 0;">
           <input type="checkbox" name="handwriting_assist" value="on">
           Also use EasyOCR (handwriting assist) with Tesseract
         </label>
-        <button type="submit">Upload</button>
+        <button type="submit" id="upload-btn">Upload</button>
       </form>
     </div>
 
+    <div id="progress-wrap" class="progress-wrap" aria-live="polite">
+      <div class="progress-label" id="progress-label">Preparing…</div>
+      <div class="progress-track">
+        <div id="progress-fill" class="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+      </div>
+      <div class="progress-detail" id="progress-detail"></div>
+    </div>
+    <div id="upload-err" class="err-box"></div>
+
     <p style="margin-top: 1rem;"><a href="{{ url_for('index') }}">&larr; Back to documents</a></p>
+
+    <script>
+(function () {
+  var form = document.getElementById("upload-form");
+  var btn = document.getElementById("upload-btn");
+  var wrap = document.getElementById("progress-wrap");
+  var label = document.getElementById("progress-label");
+  var fill = document.getElementById("progress-fill");
+  var detail = document.getElementById("progress-detail");
+  var errBox = document.getElementById("upload-err");
+  var apiUrl = {{ url_for("api_upload_pipeline") | tojson }};
+  var pollMs = 350;
+
+  function setBar(pct, title, msg) {
+    pct = Math.max(0, Math.min(100, pct));
+    fill.style.width = pct + "%";
+    fill.setAttribute("aria-valuenow", String(Math.round(pct)));
+    label.textContent = title || "Working…";
+    detail.textContent = msg || "";
+  }
+
+  function pollJob(jobId) {
+    var tpl = document.body.getAttribute("data-job-status-template") || "/api/job/__JOB__";
+    fetch(tpl.replace("__JOB__", encodeURIComponent(jobId)))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.status === "complete" && data.redirect) {
+          setBar(100, "Done", data.message || "");
+          window.location.href = data.redirect;
+          return;
+        }
+        if (data.status === "error") {
+          btn.disabled = false;
+          wrap.classList.remove("visible");
+          errBox.textContent = data.error || data.message || "Processing failed.";
+          errBox.classList.add("visible");
+          return;
+        }
+        var serverPct = typeof data.percent === "number" ? data.percent : 0;
+        var barPct = 18 + serverPct * 0.82;
+        setBar(barPct, "Processing on server…", data.message || "");
+        setTimeout(function () { pollJob(jobId); }, pollMs);
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        wrap.classList.remove("visible");
+        errBox.textContent = "Could not read job status: " + e;
+        errBox.classList.add("visible");
+      });
+  }
+
+  form.addEventListener("submit", function (ev) {
+    if (!window.FormData || !window.XMLHttpRequest) return;
+    ev.preventDefault();
+    errBox.classList.remove("visible");
+    errBox.textContent = "";
+    var fd = new FormData(form);
+    btn.disabled = true;
+    wrap.classList.add("visible");
+    setBar(0, "Uploading file…", "Sending PDF to your computer (local server)…");
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", apiUrl);
+    xhr.upload.onprogress = function (e) {
+      if (e.lengthComputable) {
+        var up = (e.loaded / e.total) * 16;
+        setBar(up, "Uploading file…", "Transferred " + Math.round((e.loaded / e.total) * 100) + "% of file…");
+      }
+    };
+    xhr.onload = function () {
+      if (xhr.status !== 200) {
+        btn.disabled = false;
+        wrap.classList.remove("visible");
+        errBox.textContent = xhr.responseText || ("HTTP " + xhr.status);
+        errBox.classList.add("visible");
+        return;
+      }
+      try {
+        var res = JSON.parse(xhr.responseText);
+        if (res.error) {
+          btn.disabled = false;
+          wrap.classList.remove("visible");
+          errBox.textContent = res.error;
+          errBox.classList.add("visible");
+          return;
+        }
+        setBar(18, "Processing on server…", "OCR and optional LLM…");
+        pollJob(res.job_id);
+      } catch (ex) {
+        btn.disabled = false;
+        wrap.classList.remove("visible");
+        errBox.textContent = "Invalid response from server.";
+        errBox.classList.add("visible");
+      }
+    };
+    xhr.onerror = function () {
+      btn.disabled = false;
+      wrap.classList.remove("visible");
+      errBox.textContent = "Network error during upload.";
+      errBox.classList.add("visible");
+    };
+    xhr.send(fd);
+  });
+})();
+    </script>
   </body>
   </html>

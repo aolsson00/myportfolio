@@ -20,9 +20,16 @@ robust logging.
 import logging
 import os
 import pathlib
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
+
+from patient_chart import maybe_rename_after_pipeline
+
+# Optional progress callback: (step_key, percent_0_100, human_message)
+ProgressCallback = Optional[Callable[[str, int, str], None]]
 
 import cv2
+
+from text_cleaning import clean_clinical_ocr_text
 import numpy as np
 import pytesseract
 from pdf2image import convert_from_path
@@ -276,7 +283,8 @@ def preprocess_image(pil_image) -> "cv2.Mat":
 def extract_text_from_pdf(
     file_path: str,
     handwriting_assist: Optional[bool] = None,
-) -> Tuple[str, str, Optional[bool]]:
+    progress: ProgressCallback = None,
+) -> Tuple[str, str, Optional[bool], str]:
     """
     Extract text from a multi-page PDF using Tesseract OCR.
 
@@ -286,8 +294,8 @@ def extract_text_from_pdf(
     3. Run Tesseract OCR for each page and concatenate results.
     4. If handwriting assist is enabled, also run EasyOCR on each page and
        append a clearly labeled section (better for some handwriting).
-    5. Persist the concatenated text to a temporary `.txt` file inside
-       `temp_extractions/`.
+    5. Normalize and clean OCR text (unicode, whitespace, noise) for NLP/LLM and FHIR.
+    6. Persist the result to a temporary `.txt` file inside `temp_extractions/`.
 
     Parameters
     ----------
@@ -296,6 +304,9 @@ def extract_text_from_pdf(
     handwriting_assist : bool, optional
         If True, run EasyOCR in addition to Tesseract. If None, use environment
         variable ``OCR_HANDWRITING_ASSIST`` (1/true/yes/on to enable).
+    progress : callable, optional
+        If set, called as ``progress(step, percent, message)`` at coarse-grained
+        stages (OCR pages, text cleaning, LLM hook, rename).
 
     Notes
     -----
@@ -304,18 +315,25 @@ def extract_text_from_pdf(
 
     Returns
     -------
-    Tuple[str, str, Optional[bool]]
+    Tuple[str, str, Optional[bool], str]
         - full_text: The concatenated OCR output from all pages.
         - output_txt_path: Absolute path to the temporary text file.
         - llm_ok: Whether local LLM extraction wrote ``review_data/<stem>_llm.json``
           (``True``), failed or was skipped (``False``/``None``). See ``SKIP_LLM``.
+        - pdf_path_final: Absolute path to the PDF (may be renamed to
+          ``First_Last_MM-DD-YYYY.pdf`` after OCR when demographics allow).
     """
     pdf_path = pathlib.Path(file_path).resolve()
+
+    def _p(step: str, pct: int, msg: str) -> None:
+        if progress:
+            progress(step, pct, msg)
 
     if not pdf_path.exists():
         raise FileNotFoundError(f"PDF file not found: {pdf_path}")
 
     LOGGER.info("Starting OCR extraction for PDF: %s", pdf_path)
+    _p("pdf", 5, "Opening PDF…")
 
     # Render DPI: 300 is standard; 400–600 can help faint pencil / small handwriting
     # (slower, more memory). Override with OCR_PDF_DPI=400 etc.
@@ -330,6 +348,7 @@ def extract_text_from_pdf(
         raise
 
     LOGGER.info("PDF contains %d page(s) for OCR processing.", len(pages))
+    n_pages = max(len(pages), 1)
 
     use_hw = _handwriting_assist_enabled(handwriting_assist)
     if use_hw:
@@ -341,6 +360,9 @@ def extract_text_from_pdf(
     ocr_results = []
     for idx, page in enumerate(pages, start=1):
         LOGGER.debug("Processing page %d", idx)
+        # Map pages to ~8–68% (room for clean + LLM)
+        pct = 8 + int(60 * idx / n_pages)
+        _p("ocr", pct, f"OCR: page {idx} of {n_pages} (Tesseract)…")
 
         # Apply Li et al. (2024)-inspired preprocessing
         preprocessed = preprocess_image(page)
@@ -378,6 +400,16 @@ def extract_text_from_pdf(
         len(full_text),
     )
 
+    raw_len = len(full_text)
+    _p("clean", 70, "Cleaning text for NLP / FHIR…")
+    full_text = clean_clinical_ocr_text(full_text)
+    LOGGER.info(
+        "OCR text post-processing (normalize/clean for NLP extraction & FHIR): "
+        "%d -> %d characters",
+        raw_len,
+        len(full_text),
+    )
+
     # Persist to ./temp_extractions/{filename}.txt
     output_dir = _ensure_output_dir()
     output_filename = f"{pdf_path.stem}.txt"
@@ -387,16 +419,24 @@ def extract_text_from_pdf(
         f.write(full_text)
 
     LOGGER.info("OCR output written to: %s", output_path)
+    _p("save", 76, "Saved OCR text file…")
 
     llm_ok: Optional[bool] = None
     try:
         from llm_extractor import maybe_run_llm_extraction_after_ocr
 
+        _p("llm", 80, "Structured extraction (local LLM / Ollama)…")
         llm_ok = maybe_run_llm_extraction_after_ocr(pdf_path.stem)
+        _p("llm", 94, "LLM step finished…")
     except Exception:
         LOGGER.exception("Unexpected error during LLM extraction hook")
 
-    return full_text, str(output_path), llm_ok
+    _p("rename", 96, "Renaming file to patient name (if known)…")
+    pdf_path = maybe_rename_after_pipeline(pdf_path, full_text)
+    output_path = output_dir / f"{pdf_path.stem}.txt"
+
+    _p("done", 98, "Finalizing…")
+    return full_text, str(output_path), llm_ok, str(pdf_path)
 
 
 if __name__ == "__main__":  # pragma: no cover - manual execution helper
@@ -422,10 +462,10 @@ if __name__ == "__main__":  # pragma: no cover - manual execution helper
     )
 
     args = parser.parse_args()
-    text, txt_path, llm_ok = extract_text_from_pdf(
+    text, txt_path, llm_ok, pdf_out = extract_text_from_pdf(
         args.pdf_path, handwriting_assist=args.handwriting
     )
-    LOGGER.info("Extraction complete. Output text file: %s", txt_path)
+    LOGGER.info("Extraction complete. PDF: %s  Text: %s", pdf_out, txt_path)
     print(txt_path)
     if llm_ok is True:
         LOGGER.info("LLM extraction completed (review_data JSON written).")
